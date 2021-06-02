@@ -132,7 +132,7 @@ public class AlgoritmoAsignacion {
 		for (int i = 0; i < b.length; i++) {
 			for (int j = 0; j < b[0].length; j++) {
 				if(b[i][j]==1){
-					al[i] = "Desde "+nodos.get(i).getNombre()+" Hasta "+nodos.get(j+b.length).getNombre();
+					//al[i] = "Desde "+nodos.get(i).getNombre()+" Hasta "+nodos.get(j+b.length).getNombre();
 				}
 			}
 		}

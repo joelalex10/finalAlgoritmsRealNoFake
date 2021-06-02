@@ -79,7 +79,7 @@ public class VentanaPrincipal {
 	private void initialize() {
 		
 		frame = new JFrame(titleWindow);
-		frame.setBounds(100, 100, 890, 647);
+		frame.setBounds(100, 100, 890, 700);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -345,7 +345,6 @@ public class VentanaPrincipal {
 				System.out.println("El ultimo Id es: "+iddGrafo);
 				
 				for(Nodo nodo: lienzo.vectorNodos) {
-					
 					NodoBDD nodoBDD = new NodoBDD();
 					nodoBDD.setX(nodo.getX());
 					nodoBDD.setY(nodo.getY());
@@ -355,18 +354,14 @@ public class VentanaPrincipal {
 					nodoBDD.setColorGreen(nodo.getColor().getGreen());
 					nodoBDD.setColorBlue(nodo.getColor().getBlue());
 					nodoBDD.setNroActividad(nodo.getNroActividad());
-
 					int idNodo = nodoBDD.insertNodo();
-					
-					
 				}
 				NodoBDD consultaNodo = new NodoBDD();
 				consultaNodo.setIdGrafo(iddGrafo);
-				ArrayList<NodoBDD>lista= consultaNodo .getNodoByGrafoId();
-				//System.out.println(lista);
+				ArrayList<NodoBDD>lista= consultaNodo.getNodoByGrafoId();
 				System.out.println("");
+
 				for(Enlace enlace: lienzo.vectorEnlace) {
-					
 					EnlaceBDD enlaceBDD = new EnlaceBDD();
 					enlaceBDD.setX1(enlace.getX1());
 					enlaceBDD.setY1(enlace.getY1());
@@ -580,11 +575,16 @@ public class VentanaPrincipal {
 				frame.dispose();
 			}
 		});
+
 		btnAsignacion.setForeground(Color.WHITE);
 		btnAsignacion.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 13));
 		btnAsignacion.setBackground(new Color(21, 88, 16));
 		btnAsignacion.setBounds(25, 52, 160, 30);
 		panel_1.add(btnAsignacion);
+
+
+
+
 
 		
 		

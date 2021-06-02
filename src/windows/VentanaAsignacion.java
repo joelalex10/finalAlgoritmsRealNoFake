@@ -93,10 +93,43 @@ public class VentanaAsignacion {
 		btnNewButton_1_3.setBackground(new Color(21, 88, 16));
 		btnNewButton_1_3.setBounds(184, 11, 160, 30);
 		panel_1.add(btnNewButton_1_3);
-		
 		JButton btnNewButton_1_3_1 = new JButton("GUARDAR GRAFO");
 		btnNewButton_1_3_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				String newNombreNodo = JOptionPane.showInputDialog("Ingrese un nombre a guardar");
+				GrafoBDD grafo = new GrafoBDD();
+				grafo.setNombre(newNombreNodo);
+				int iddGrafo = grafo.insertGrafo();
+				System.out.println("El ultimo Id es: "+iddGrafo);
+
+				for(Nodo nodo: lienzoAsignacion.vectorNodosOrigen) {
+					NodoBDD nodoBDD = new NodoBDD();
+					nodoBDD.setX(nodo.getX());
+					nodoBDD.setY(nodo.getY());
+					nodoBDD.setNombre(nodo.getNombre());
+					nodoBDD.setIdGrafo(iddGrafo);
+					nodoBDD.setColorRed(nodo.getColor().getRed());
+					nodoBDD.setColorGreen(nodo.getColor().getGreen());
+					nodoBDD.setColorBlue(nodo.getColor().getBlue());
+					nodoBDD.setNroActividad(nodo.getNroActividad());
+					int idNodo = nodoBDD.insertNodo();
+				}
+				for(Nodo nodo: lienzoAsignacion.vectorNodosDestino) {
+					NodoBDD nodoBDD = new NodoBDD();
+					nodoBDD.setX(nodo.getX());
+					nodoBDD.setY(nodo.getY());
+					nodoBDD.setNombre(nodo.getNombre());
+					nodoBDD.setIdGrafo(iddGrafo);
+					nodoBDD.setColorRed(nodo.getColor().getRed());
+					nodoBDD.setColorGreen(nodo.getColor().getGreen());
+					nodoBDD.setColorBlue(nodo.getColor().getBlue());
+					nodoBDD.setNroActividad(nodo.getNroActividad());
+					int idNodo = nodoBDD.insertNodo();
+				}
+				NodoBDD consultaNodo = new NodoBDD();
+				consultaNodo.setIdGrafo(iddGrafo);
+				ArrayList<NodoBDD>lista= consultaNodo.getNodoByGrafoId();
+
 			}
 		});
 		btnNewButton_1_3_1.setForeground(Color.WHITE);
@@ -138,11 +171,11 @@ public class VentanaAsignacion {
 		btnAsignacion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
+
 				String []menu= {"Maximo","Minimo"};
 				int optimo[][] = null;
 				String valor = (String)JOptionPane.showInputDialog(null, "seleccionar opcion", "opciones",JOptionPane.DEFAULT_OPTION, null, menu,menu[0]);
 				if (valor.equalsIgnoreCase ("Maximo")) {
-					/*ds	*/
 					AlgoritmoAsignacion cc = new AlgoritmoAsignacion (lienzoAsignacion.matrizCostos, true,lienzoAsignacion.vectorNodosOrigen,
 							lienzoAsignacion.vectorNodosDestino, lienzoAsignacion.vectorEnlace);
 					cc.efectuarAlgoritmo();
@@ -154,34 +187,18 @@ public class VentanaAsignacion {
 					cc.efectuarAlgoritmo();
 					optimo = cc.getMatrizOptimo();
 				}
+				int mat[][] = lienzoAsignacion.matrizCostos;
+				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen, lienzoAsignacion.vectorNodosDestino, mat);
+				window.setLocationRelativeTo(null);
+				window.setVisible(true);
+
+				/*
 				JFrame ventanaMatriz = new JFrame("Matriz de Adyacentes");
 				ventanaMatriz.setSize(500, 300);
 				JTextArea matriz  = new JTextArea(lienzoAsignacion.imprimirMatrizAdyString(optimo));
 				ventanaMatriz.add(new JScrollPane(matriz), BorderLayout.CENTER);
 				ventanaMatriz.setVisible(true);
-				ventanaMatriz.setLocationRelativeTo(null);
-
-				/***System.out.println("DATOS VECTOREES");
-				System.out.println("");
-				for(Nodo nodo: lienzoAsignacion.vectorNodosOrigen){
-					System.out.println(nodo);
-				}
-				System.out.println("");
-				for(Nodo nodo: lienzoAsignacion.vectorNodosDestino){
-					System.out.println(nodo);
-				}
-				System.out.println("");
-				for(Enlace enlace: lienzoAsignacion.vectorEnlace){
-					System.out.println(enlace);
-				}
-
-				System.out.println("");
-				for(int i=0;i<origen;i++){
-					System.out.println("");
-					for(int j=0;j<destino;j++){
-						System.out.print(lienzoAsignacion.matrizCostos[i][j]+"\t");
-					}
-				}*/
+				ventanaMatriz.setLocationRelativeTo(null);**/
 
 			}
 		});
