@@ -564,9 +564,9 @@ public class VentanaPrincipal {
 		JButton btnAsignacion = new JButton("ASIGNACION");
 		btnAsignacion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String strOrigen = JOptionPane.showInputDialog("Introducir maximo nodos origen");
+				String strOrigen = JOptionPane.showInputDialog("Introducir maximo nodos origen / DISPONIBILIDAD");
 				int origen = Integer.parseInt(strOrigen);
-				String strDestino = JOptionPane.showInputDialog("Introducir maximo nodos destino");
+				String strDestino = JOptionPane.showInputDialog("Introducir maximo nodos destino / DEMANDA");
 				int destino = Integer.parseInt(strDestino);
 
 				VentanaAsignacion window=new VentanaAsignacion(origen, destino);

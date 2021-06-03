@@ -149,6 +149,8 @@ public class LienzoAsignacion extends JPanel implements MouseListener, MouseMoti
             }
         }
     }
+
+
     public void addNodo(Vector<Nodo> vectorNodos, MouseEvent e, int maxNodo, int c, Color color){
         System.out.println("Se selecciono maximo");
         if(vectorNodos.size() >= maxNodo){

@@ -6,12 +6,16 @@ import grafos.Enlace;
 import grafos.Nodo;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import static java.util.Arrays.stream;
 
 public class VentanaAsignacion {
 
@@ -31,26 +35,20 @@ public class VentanaAsignacion {
 	int actDestino = -1;
 
 	public String titleWindow= "ALGORITMO DE ASIGNACION";
+	private int[][] matrix;
+	private int[][] MatrizSolucion;
 
-	/**
-	 * Launch the application.
-	 */
+	ExecutorService es = Executors.newFixedThreadPool(2);
+	boolean[] rowDone = new boolean[origen];
+	boolean[] colDone = new boolean[destino];
+	int[][] result = new int[origen][destino];
 
-
-	/**
-	 * Create the application.
-	 * @param origen
-	 * @param destino
-	 */
 	public VentanaAsignacion(int origen, int destino) {
 		this.origen = origen;
 		this.destino = destino;
 		initialize();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	private void initialize() {
 		
 		frame = new JFrame(titleWindow);
@@ -172,6 +170,7 @@ public class VentanaAsignacion {
 			public void actionPerformed(ActionEvent arg0) {
 
 
+
 				String []menu= {"Maximo","Minimo"};
 				int optimo[][] = null;
 				String valor = (String)JOptionPane.showInputDialog(null, "seleccionar opcion", "opciones",JOptionPane.DEFAULT_OPTION, null, menu,menu[0]);
@@ -192,13 +191,12 @@ public class VentanaAsignacion {
 				window.setLocationRelativeTo(null);
 				window.setVisible(true);
 
-				/*
 				JFrame ventanaMatriz = new JFrame("Matriz de Adyacentes");
 				ventanaMatriz.setSize(500, 300);
 				JTextArea matriz  = new JTextArea(lienzoAsignacion.imprimirMatrizAdyString(optimo));
 				ventanaMatriz.add(new JScrollPane(matriz), BorderLayout.CENTER);
 				ventanaMatriz.setVisible(true);
-				ventanaMatriz.setLocationRelativeTo(null);**/
+				ventanaMatriz.setLocationRelativeTo(null);
 
 			}
 		});
@@ -207,9 +205,116 @@ public class VentanaAsignacion {
 		btnAsignacion.setBackground(new Color(21, 88, 16));
 		btnAsignacion.setBounds(25, 11, 160, 30);
 		panel_1.add(btnAsignacion);
+
+		JButton btnKramer = new JButton("KRAMER");
+		btnKramer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ArrayList<Integer> ofertas=generarArreglo(lienzoAsignacion.vectorNodosOrigen);
+				ArrayList<Integer> demandas=generarArreglo(lienzoAsignacion.vectorNodosDestino);
+				int mat[][] = lienzoAsignacion.matrizCostos;
+
+				String []menu= {"Maximo","Minimo"};
+				int optimo[][] = null;
+				String valor = (String)JOptionPane.showInputDialog(null, "seleccionar opcion", "opciones",JOptionPane.DEFAULT_OPTION, null, menu,menu[0]);
+
+				if (valor.equalsIgnoreCase ("Maximo")) {
+
+					MatrizSolucion=Noro9(mat,demandas,ofertas,origen,destino);
+					JTable tabla= printMatrix(MatrizSolucion,origen,destino);
+					tabla.setBounds(60,400,400,200);
+					tabla.setAutoResizeMode(1);
+					frame.add(tabla);
+					mostrar(MatrizSolucion);
+					CostoTotal(mat,MatrizSolucion);
+
+				}
+				if (valor.equalsIgnoreCase ("Minimo")) {
+
+				}
+
+
+			}
+		});
+
+		btnKramer.setForeground(Color.WHITE);
+		btnKramer.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 13));
+		btnKramer.setBackground(new Color(21, 88, 16));
+		btnKramer.setBounds(25, 52, 160, 30);
+		panel_1.add(btnKramer);
 		
 	}
+	public static void CostoTotal(int[][]matriz,int[][]matrizSolu){
 
+		int suma=0;
+		for (int i = 0; i < matriz.length; i++) {
+			for (int j = 0; j < matriz[0].length; j++) {
+				suma= suma+(matriz[i][j]*matrizSolu[i][j]);
+			}
+
+		}
+
+		JOptionPane.showMessageDialog (null, suma);
+	}
+	public void mostrar(int matrizAdy[][]) {
+		int c =matrizAdy.length;
+		String[] m= new String[c];
+		for(int i = 0;i < c; i++) {
+			String v ="";
+			for(int j = 0; j < matrizAdy[0].length; j++) {
+				v+= matrizAdy[i][j]+"   ";
+			}
+			m[i]=v;
+		}
+		JOptionPane.showMessageDialog (null, m);
+
+	}
+
+	public int[][] Noro9(int[][]matrix,ArrayList<Integer> demanda, ArrayList<Integer> oferta, int matrixRow, int matrixCol){
+		int[][] matrizSolucion= new int[matrixRow][matrixCol];
+		for(int col=0;col<matrixRow;col++){
+			for(int fil=0;fil<matrixCol;fil++){
+				if (demanda.get(fil)<=oferta.get(col)){
+					matrizSolucion[col][fil]=demanda.get(fil);
+					oferta.set(col,oferta.get(col)-demanda.get(fil));
+					demanda.set(fil,0);
+				}else{
+					matrizSolucion[col][fil]=oferta.get(col);
+					demanda.set(fil,demanda.get(fil)-oferta.get(col));
+					oferta.set(col,0);
+				}
+			}
+
+		}
+
+		return matrizSolucion;
+	}
+
+	private ArrayList<Integer> generarArreglo(Vector<Nodo> vectorNodos) {
+		Object[] fieldsOrigen = new Object[vectorNodos.size()*2];
+		ArrayList<Integer> matIntOrigen = new ArrayList<Integer>();
+
+		for(int i=0;i<vectorNodos.size();i++){
+			fieldsOrigen[i*2] = vectorNodos.get(i).getNombre();
+		}
+		for(int i=0;i<vectorNodos.size();i++){
+			fieldsOrigen[i*2+1] = new JTextField();;
+		}
+		JOptionPane.showConfirmDialog(null,fieldsOrigen,
+				"LLENE LOS RECUADROS", JOptionPane.OK_CANCEL_OPTION);
+
+		for(int i=0;i<vectorNodos.size();i++){
+			JTextField auxiiar = (JTextField)fieldsOrigen[i*2+1];
+			try{
+				matIntOrigen.add(Integer.parseInt(auxiiar.getText()));
+			}catch (NumberFormatException e){
+				matIntOrigen.add(0);
+			}
+		}
+		for(int i=0;i<vectorNodos.size();i++){
+			System.out.println(matIntOrigen.get(i));
+		}
+		return matIntOrigen;
+	}
 
 
 	public int getOrigen() {
@@ -226,5 +331,21 @@ public class VentanaAsignacion {
 
 	public void setDestino(int destino) {
 		this.destino = destino;
+	}
+
+	public static JTable printMatrix(int[][] matrix, int matrixRow, int matrixCol) {
+		System.out.println("Your Matrix is : ");
+		JTable tblMatriz = new JTable();
+		DefaultTableModel matri = (DefaultTableModel) tblMatriz.getModel();
+		matri.setRowCount(matrixRow);
+		matri.setColumnCount(matrixCol);
+		for (int i = 0; i < matrixRow; i++) {
+			for (int j = 0; j < matrixCol; j++) {
+				tblMatriz.setValueAt(matrix[i][j],i,j);
+			}
+
+		}
+
+		return tblMatriz;
 	}
 }
