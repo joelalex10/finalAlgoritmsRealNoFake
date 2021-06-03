@@ -541,14 +541,10 @@ public class VentanaPrincipal {
 					enlace.setJohnson(true);
 				}
 
-				//System.out.println(lienzo.vectorNodos);
-				//System.out.println(lienzo.vectorEnlace);
 				Johnson johnson = new Johnson();
 				johnson.setEnlaces(lienzo.vectorEnlace);
 				johnson.setNodos(lienzo.vectorNodos);
 				johnson.eject();
-				//System.out.println(lienzo.vectorNodos);
-				//System.out.println(lienzo.vectorEnlace);
 				JOptionPane.showMessageDialog(null,"ALGORITMO DE JOHNSON EJECUTANDOSE");
 
 
@@ -564,9 +560,9 @@ public class VentanaPrincipal {
 		JButton btnAsignacion = new JButton("ASIGNACION");
 		btnAsignacion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String strOrigen = JOptionPane.showInputDialog("Introducir maximo nodos origen / DISPONIBILIDAD");
+				String strOrigen = JOptionPane.showInputDialog("Introducir maximo nodos origen");
 				int origen = Integer.parseInt(strOrigen);
-				String strDestino = JOptionPane.showInputDialog("Introducir maximo nodos destino / DEMANDA");
+				String strDestino = JOptionPane.showInputDialog("Introducir maximo nodos destino");
 				int destino = Integer.parseInt(strDestino);
 
 				VentanaAsignacion window=new VentanaAsignacion(origen, destino);

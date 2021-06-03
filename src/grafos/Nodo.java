@@ -16,12 +16,20 @@ public class Nodo {
 	private int nroActividad;
 	private boolean origenAsignacion;
 	private  boolean destinoAsignacion;
-	
+	private int definicion;
 	
 	
 	public Nodo() {
 	}
-	
+
+	public int getDefinicion() {
+		return definicion;
+	}
+
+	public void setDefinicion(int definicion) {
+		this.definicion = definicion;
+	}
+
 	public void pintar(Graphics g) {
 		g.setColor(this.color);
 		g.fillOval(this.x -d/2, this.y - d/2, d*3, d);

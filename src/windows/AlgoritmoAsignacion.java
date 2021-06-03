@@ -9,30 +9,19 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 public class AlgoritmoAsignacion {
-	//private Vector<Nodo> nodos;
-
-	private Vector<Nodo> list1;
-	private Vector<Nodo> list2;
-
-	private Vector<Enlace> aristas;
 	private int[][] matrizAdyacente;
 	private int[][] matrizAlgoritmo;
 	private boolean opcion;//maximo = true o minimo = false
-	
 	private int[][] alfa;    
 	private int[][] resta1;
 	private int[][] gama;
 	private int[][] resta2;
-
 	private int[][] matrizOptimo;
 	
-	public AlgoritmoAsignacion(int[][] matrizAdyacente, boolean opcion, Vector<Nodo> list1, Vector<Nodo> list2, Vector<Enlace> aristas) {
+	public AlgoritmoAsignacion(int[][] matrizAdyacente, boolean opcion) {
 		super();
 		this.matrizAdyacente = matrizAdyacente;
 		this.opcion = opcion;
-		this.list1 = list1;
-		this.list2 = list2;
-		this.aristas = aristas;
 
 		System.out.println("DATOS");
 
@@ -44,13 +33,7 @@ public class AlgoritmoAsignacion {
 				System.out.print(matrizAdyacente[i][j]+"\t");
 			}
 		}
-
-		System.out.println(matrizAdyacente);
-
 		System.out.println(opcion);
-		System.out.println(list1);
-		System.out.println(list2);
-		System.out.println(aristas);
 
 
 	}//end constructor class
@@ -63,8 +46,29 @@ public class AlgoritmoAsignacion {
 	public void efectuarAlgoritmo() {	
 		mostrar(matrizAdyacente);
 		gama = getMinOMax(matrizAdyacente);
-		resta2 = restarMatriz(matrizAdyacente, gama);		
+		System.out.println("GAMA");
+		for(int i=0;i<gama.length;i++){
+			System.out.println("");
+			for(int j=0;j<gama.length;j++){
+				System.out.print(gama[i][j]+"\t");
+			}
+		}
+		resta2 = restarMatriz(matrizAdyacente, gama);
+		System.out.println("RESTA 2");
+		for(int i=0;i<resta2.length;i++){
+			System.out.println("");
+			for(int j=0;j<resta2.length;j++){
+				System.out.print(resta2[i][j]+"\t");
+			}
+		}
 		alfa = getMinOMax2(resta2);
+		System.out.println("ALFA");
+		for(int i=0;i<alfa.length;i++){
+			System.out.println("");
+			for(int j=0;j<alfa.length;j++){
+				System.out.print(alfa[i][j]+"\t");
+			}
+		}
 		resta1 = restarMatriz(resta2, alfa);
 		mostrar(resta1);
 		int [][] resultado = new int[resta1.length][resta1.length];
@@ -77,6 +81,7 @@ public class AlgoritmoAsignacion {
 		int[][] matrizasd = a.solve();
 		int[][] hola=multiplicarMatrices(matrizAdyacente,cambiar(matrizasd));
 		if (a.isLol()){
+
 			mostrarString(orden(matrizAdyacente,cambiar(matrizasd)));
 			JOptionPane.showMessageDialog (null, letra(matrizAdyacente,cambiar(matrizasd)));
 			SumaAsignado(matrizAdyacente,cambiar(matrizasd));
@@ -99,6 +104,8 @@ public class AlgoritmoAsignacion {
 				}else
 					matriz[x][y]=1;
 		}
+
+
 		return matriz;
 	}
 	public static int[][] multiplicarMatrices(int [][] originalMat, int [][] newMat){
@@ -170,13 +177,13 @@ public class AlgoritmoAsignacion {
 				for(int j = 0 ;j < matrizC.length; j++) {
 					matrizC[j][i] = minimo;
 				}
-			}			
-		
-		
+			}
 		}
+
 		return matrizC;		
 	}
 	private int[][] getMinOMax2(int[][] m){
+
 		int [][] matrizC = new int[m.length][m[0].length];
 		for(int i = 0; i < matrizC.length; i++) {
 			if(opcion) {
@@ -191,6 +198,9 @@ public class AlgoritmoAsignacion {
 				}
 			}			
 		}
+
+		System.out.println("");
+
 		return matrizC;		
 	}
 	private int getMaximo(int[][] m, int indice, boolean estado) {
@@ -223,128 +233,12 @@ public class AlgoritmoAsignacion {
 	private int[][] restarMatriz(int[][] matrizA, int[][] matrizB) {
 		int[][] matrizRes = new int[matrizA.length][matrizA[0].length];
 		for(int i=0;i<matrizA.length;i++){
-	        for(int j=0;j<matrizA[0].length;j++){
-	                matrizRes[i][j]=matrizA[i][j]-matrizB[i][j]; 
-	        }
+			for(int j=0;j<matrizA[0].length;j++){
+				matrizRes[i][j]=matrizA[i][j]-matrizB[i][j];
+			}
 		}
 		return matrizRes;
 	}
-	
-//	private int[][] escogerCeros(int[][] m) {
-//		int aux[][];
-//		int [][] h = new int[m.length][m[0].length];
-//		boolean flag = true;
-//		aux = m;
-//		do {
-//
-//			//JOptionPane.showMessageDialog(null, "itacion joder");
-//			aux = iterar(aux);
-//			//mostrar(aux);
-//			eliminaCeros(aux);
-//			//mostrar(aux);
-//
-//		} while(!validar(aux));
-//		matrizOptimo = aux;
-//		//mostrar(matrizOptimo);
-//
-//		/*aux = m;
-//		aux = iterar(aux);
-//		JOptionPane.showMessageDialog(null, "itacion joder");
-//		mostrar(aux);
-//		eliminaCeros(aux);
-//		mostrar(aux);
-//		matrizOptimo = aux;*/
-//
-//		/*do {
-//			aux = iterar(aux);
-//			JOptionPane.showMessageDialog(null, "itacion joder");
-//			mostrar(aux);
-//			eliminaCeros(aux);
-//			mostrar(aux);
-//
-//			/*if(existeCeros(aux)) {
-//				JOptionPane.showMessageDialog(null, "LLEGUE aQUI "+existeCeros(aux));
-//				flag = false;
-//			} /*else {
-//				JOptionPane.showMessageDialog(null, "LLEGUE aQUI "+existeCeros(aux));
-//				mostrar(aux);
-//				aux = restarMatriz(resta1, gama);
-//				mostrar(aux);
-//				JOptionPane.showMessageDialog(null, "LLEGUE aQUI ITERACION");
-//				/*int[][] matriz = {
-//						{80,  0, 30, 120, 0},
-//						{80,  0, 30, 120, 0},
-//						{60, 60,  1,  80, 0},
-//						{60, 60,  1,  80, 0},
-//						{ 0, 90,  0,   0, 5}};
-//				/*int[][] matriz = {
-//						{80,  0,  0, 120, 0},
-//						{80,  0,  0, 120, 0},
-//						{60, 60,  1,  80, 0},
-//						{60, 60,  1,  80, 0},
-//						{ 0, 90,  0,   0, 5}};*/
-//				/*int[][] matriz = {
-//						{3,  2,  0, 2},
-//						{0,  5,  1, 1},
-//						{0,  2,  4, 6},
-//						{3,  0,  2, 0},};
-//				//aux = iterar(matriz);
-//
-//			//}
-//
-//		} while(flag);*/
-//
-//		return h;
-//
-//	}
-	/*private boolean ajustarCeros(int[][] jj) {
-		int[][]aux = jj;
-		boolean flag = true;
-		for(int i = 0; i < aux.length; i++) {
-			for(int j = 0; j < aux[0].length; j++) {					
-				if(aux[i][j] == 0) {						
-					eliminaCeros(aux);					
-					if(existeCeros(aux)) {
-						//mostrar(aux);	 
-						flag = false;
-					} else {								
-						aux = restarMatriz(resta2, alfa);
-						aux[i][j] = 4;
-						mostrar(aux);
-					}//fin del if else interno						
-				}//fin del if 					
-			}//for j	
-		}//for i
-		return flag;
-	} */
-//	private int[][] iterar(int [][] g) {
-//		int[][] v = g;
-//		int[][] lineasOficiales = getLineas(g);
-//		int [] filas = lineasOficiales[0];
-//		int [] columnas = lineasOficiales[1];
-//		//mostrar(lineasOficiales);
-//
-//		int menor = getMenorOficial(filas, columnas, v);
-//		System.out.println(menor);
-//
-//
-//		for(int i1 : filas) {
-//			for(int i2 : columnas) {
-//				if(i1 != -1 && i2 != -1) {
-//					v[i1][i2] += menor;
-//				}
-//			}
-//		}
-//
-//		for(int i = 0; i < v.length; i++) {
-//			for(int j = 0; j < v[0].length; j++) {
-//				if(esDiferente(i, filas) && esDiferente(j, columnas)) {
-//					v[i][j] -= menor;
-//				}
-//			}
-//		}
-//		return v;
-//	}
 	private int getMenorOficial(int[] j1, int[] j2, int[][] g) {
 		int menor = 100;
 		for(int i = 0; i < g.length; i++) {

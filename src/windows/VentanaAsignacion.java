@@ -99,7 +99,6 @@ public class VentanaAsignacion {
 				grafo.setNombre(newNombreNodo);
 				int iddGrafo = grafo.insertGrafo();
 				System.out.println("El ultimo Id es: "+iddGrafo);
-
 				for(Nodo nodo: lienzoAsignacion.vectorNodosOrigen) {
 					NodoBDD nodoBDD = new NodoBDD();
 					nodoBDD.setX(nodo.getX());
@@ -168,21 +167,51 @@ public class VentanaAsignacion {
 		JButton btnAsignacion = new JButton("EJECUTAR");
 		btnAsignacion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
-
-
 				String []menu= {"Maximo","Minimo"};
 				int optimo[][] = null;
 				String valor = (String)JOptionPane.showInputDialog(null, "seleccionar opcion", "opciones",JOptionPane.DEFAULT_OPTION, null, menu,menu[0]);
 				if (valor.equalsIgnoreCase ("Maximo")) {
-					AlgoritmoAsignacion cc = new AlgoritmoAsignacion (lienzoAsignacion.matrizCostos, true,lienzoAsignacion.vectorNodosOrigen,
-							lienzoAsignacion.vectorNodosDestino, lienzoAsignacion.vectorEnlace);
-					cc.efectuarAlgoritmo();
-					optimo = cc.getMatrizOptimo();
+					if(lienzoAsignacion.vectorNodosDestino.size() !=lienzoAsignacion.vectorNodosOrigen.size()){
+						int max = lienzoAsignacion.vectorNodosDestino.size();
+						int matAux[][] = new int[max][max];
+						for(int i=0;i<max;i++){
+							for(int j=0;j<max;j++){
+								try{
+									matAux[i][j]=lienzoAsignacion.matrizCostos[i][j];
+								}catch (ArrayIndexOutOfBoundsException e){
+									matAux[i][j] = 0;
+								}
+
+							}
+						}
+						AlgoritmoAsignacion cc = new AlgoritmoAsignacion (matAux, true);
+						cc.efectuarAlgoritmo();
+						optimo = cc.getMatrizOptimo();
+					}else{
+						AlgoritmoAsignacion cc = new AlgoritmoAsignacion (lienzoAsignacion.matrizCostos, true);
+						cc.efectuarAlgoritmo();
+						optimo = cc.getMatrizOptimo();
+					}
 				}
 				if (valor.equalsIgnoreCase ("Minimo")) {
-					AlgoritmoAsignacion cc = new AlgoritmoAsignacion (lienzoAsignacion.matrizCostos, false,lienzoAsignacion.vectorNodosOrigen,
-							lienzoAsignacion.vectorNodosDestino,lienzoAsignacion.vectorEnlace);
+					if(lienzoAsignacion.vectorNodosOrigen.size() != lienzoAsignacion.vectorNodosDestino.size()){
+						int max = lienzoAsignacion.vectorNodosDestino.size();
+						int matAux[][] = new int[max][max];
+						for(int i=0;i<max;i++){
+							for(int j=0;j<max;j++){
+								try{
+									matAux[i][j]=lienzoAsignacion.matrizCostos[i][j];
+								}catch (ArrayIndexOutOfBoundsException e){
+									matAux[i][j] = 0;
+								}
+							}
+						}
+						AlgoritmoAsignacion cc = new AlgoritmoAsignacion (matAux, true);
+						cc.efectuarAlgoritmo();
+						optimo = cc.getMatrizOptimo();
+					}
+				}else{
+					AlgoritmoAsignacion cc = new AlgoritmoAsignacion (lienzoAsignacion.matrizCostos, false);
 					cc.efectuarAlgoritmo();
 					optimo = cc.getMatrizOptimo();
 				}
@@ -226,13 +255,9 @@ public class VentanaAsignacion {
 					frame.add(tabla);
 					mostrar(MatrizSolucion);
 					CostoTotal(mat,MatrizSolucion);
-
 				}
 				if (valor.equalsIgnoreCase ("Minimo")) {
-
 				}
-
-
 			}
 		});
 

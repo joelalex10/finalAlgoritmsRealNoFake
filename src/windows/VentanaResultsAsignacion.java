@@ -30,6 +30,10 @@ public class VentanaResultsAsignacion extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
 
+        JLabel jLabel = new JLabel();
+        jLabel.setText("MATRIZ ORIGINAL");
+        jLabel.setBounds(10,100,90,40);
+        add(jLabel);
         JTextField [][] matriz = new JTextField[matrixRow+1][matrixCol+1];
         int posh = 30;
         int posv = 60;
@@ -60,7 +64,9 @@ public class VentanaResultsAsignacion extends JFrame {
                 matriz[i+1][j+1].setText(matrizCoeficientes[i][j]+"");
             }
         }
+    }
 
+    public void generarMatriz2(){
 
     }
 }

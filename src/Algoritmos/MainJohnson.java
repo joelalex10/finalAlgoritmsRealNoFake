@@ -10,7 +10,6 @@ public class MainJohnson {
     public static void main(String args[]){
         Vector<Nodo> listNodo= new Vector<>();
         Vector<Enlace>listEnlace= new Vector<>();
-
         llenar(listNodo,listEnlace);
     }
 
