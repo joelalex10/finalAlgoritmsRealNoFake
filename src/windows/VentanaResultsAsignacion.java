@@ -14,13 +14,19 @@ public class VentanaResultsAsignacion extends JFrame {
     Vector<Nodo> vecNodo1;
     Vector<Nodo> vecNodo2;
     int matrizCoeficientes[][];
+    int matrizRestas[][];
+    String matrizResultados[][];
+    int sumaTotal;
 
-    public VentanaResultsAsignacion(int matrixRow, int matrixCol, Vector<Nodo> vecNodo1, Vector<Nodo> vecNodo2, int matrizCoeficientes[][]) {
+    public VentanaResultsAsignacion(int matrixRow, int matrixCol, Vector<Nodo> vecNodo1, Vector<Nodo> vecNodo2, int matrizCoeficientes[][],int  matrizRestas[][],String matrizResultados[][], int sumaTotal ) {
         this.matrixRow = matrixRow;
         this.matrixCol = matrixCol;
         this.vecNodo1 = vecNodo1;
         this.vecNodo2 = vecNodo2;
+        this.matrizRestas = matrizRestas;
         this.matrizCoeficientes = matrizCoeficientes;
+        this.matrizResultados= matrizResultados;
+        this.sumaTotal = sumaTotal;
         initialize();
     }
 
@@ -30,10 +36,10 @@ public class VentanaResultsAsignacion extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
 
-        JLabel jLabel = new JLabel();
+        /***JLabel jLabel = new JLabel();
         jLabel.setText("MATRIZ ORIGINAL");
-        jLabel.setBounds(10,100,90,40);
-        add(jLabel);
+        jLabel.setBounds(100,0,190,40);
+        add(jLabel);*/
         JTextField [][] matriz = new JTextField[matrixRow+1][matrixCol+1];
         int posh = 30;
         int posv = 60;
@@ -64,6 +70,76 @@ public class VentanaResultsAsignacion extends JFrame {
                 matriz[i+1][j+1].setText(matrizCoeficientes[i][j]+"");
             }
         }
+
+        int posh1 = posh;
+        int posv1 = posv*matrizCoeficientes.length+20;
+        JTextField [][] matriz1 = new JTextField[matrixRow+1][matrixCol+1];
+        int fil1;
+        int col1;
+        for(col1=0;col1<(matrixRow+1);col1++){
+            for(fil1=0;fil1<(matrixCol+1);fil1++){
+                matriz1[col1][fil1]= new JTextField();
+                matriz1[col1][fil1].setBounds(posv,posh,90,40);
+                posv+=90;
+                add(matriz1[col1][fil1]);
+            }
+            posh+=40;
+            posv =60;
+        }
+        matriz1[0][0].setText("O/D");
+        matriz1[0][0].setEnabled(false);
+        for(int i=0;i<vecNodo1.size();i++){
+            matriz1[i+1][0].setText(vecNodo1.get(i).getNombre());
+            matriz1[i+1][0].setEnabled(false);
+        }
+        for(int i=0;i<vecNodo2.size();i++){
+            matriz1[0][i+1].setText(vecNodo2.get(i).getNombre());
+            matriz1[0][i+1].setEnabled(false);
+        }
+        for(int i=0;i<matrixRow;i++){
+            for(int j=0;j<matrixCol;j++){
+                matriz1[i+1][j+1].setText(matrizRestas[i][j]+"");
+            }
+        }
+
+
+        int posh2 = posh;
+        int posv2 = posv*matrizCoeficientes.length*2+40;
+        JTextField [][] matriz2 = new JTextField[matrixRow+1][matrixCol+1];
+        int fil2;
+        int col2;
+        for(col2=0;col2<(matrixRow+1);col2++){
+            for(fil2=0;fil2<(matrixCol+1);fil2++){
+                matriz2[col2][fil2]= new JTextField();
+                matriz2[col2][fil2].setBounds(posv,posh,90,40);
+                posv+=90;
+                add(matriz2[col2][fil2]);
+            }
+            posh+=40;
+            posv =60;
+        }
+        matriz2[0][0].setText("O/D");
+        matriz2[0][0].setEnabled(false);
+        for(int i=0;i<vecNodo1.size();i++){
+            matriz2[i+1][0].setText(vecNodo1.get(i).getNombre());
+            matriz2[i+1][0].setEnabled(false);
+        }
+        for(int i=0;i<vecNodo2.size();i++){
+            matriz2[0][i+1].setText(vecNodo2.get(i).getNombre());
+            matriz2[0][i+1].setEnabled(false);
+        }
+        for(int i=0;i<matrixRow;i++){
+            for(int j=0;j<matrixCol;j++){
+                matriz2[i+1][j+1].setText(matrizResultados[i][j]+"");
+            }
+        }
+
+        JLabel jLabel = new JLabel();
+        jLabel.setText("Total: "+sumaTotal);
+        jLabel.setBounds(100,posv*3*matrizCoeficientes.length+20,190,40);
+        add(jLabel);
+
+
     }
 
     public void generarMatriz2(){

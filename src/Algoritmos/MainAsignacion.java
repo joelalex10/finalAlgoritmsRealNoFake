@@ -1,5 +1,7 @@
 package Algoritmos;
 
+import windows.AlgoritmoAsignacion;
+
 public class MainAsignacion {
     public static void main(String args[]){
 
@@ -10,8 +12,9 @@ public class MainAsignacion {
         };
         int n=3;
         int m=3;
-        Asignacion a = new Asignacion(mat1,true);
+        AlgoritmoAsignacion a = new AlgoritmoAsignacion(mat1,true);
         a.efectuarAlgoritmo();
+        int [][]optimo = a.getMatrizOptimo();
         //a.ejecutar();
 
 

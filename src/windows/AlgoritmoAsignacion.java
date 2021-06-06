@@ -9,15 +9,16 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 public class AlgoritmoAsignacion {
-	private int[][] matrizAdyacente;
+	public int[][] matrizAdyacente;
 	private int[][] matrizAlgoritmo;
 	private boolean opcion;//maximo = true o minimo = false
 	private int[][] alfa;    
-	private int[][] resta1;
+	public int[][] resta1;
 	private int[][] gama;
 	private int[][] resta2;
 	private int[][] matrizOptimo;
-	
+	public int sumaTotal;
+	public int[][] matrizResultados;
 	public AlgoritmoAsignacion(int[][] matrizAdyacente, boolean opcion) {
 		super();
 		this.matrizAdyacente = matrizAdyacente;
@@ -80,10 +81,11 @@ public class AlgoritmoAsignacion {
 		Sudoku a=new Sudoku(resultado);
 		int[][] matrizasd = a.solve();
 		int[][] hola=multiplicarMatrices(matrizAdyacente,cambiar(matrizasd));
+		matrizResultados = matrizasd;
 		if (a.isLol()){
-
 			mostrarString(orden(matrizAdyacente,cambiar(matrizasd)));
-			JOptionPane.showMessageDialog (null, letra(matrizAdyacente,cambiar(matrizasd)));
+			letra(matrizAdyacente,cambiar(matrizasd));
+			//JOptionPane.showMessageDialog (null, letra(matrizAdyacente,cambiar(matrizasd)));
 			SumaAsignado(matrizAdyacente,cambiar(matrizasd));
 
 		}
@@ -159,7 +161,7 @@ public class AlgoritmoAsignacion {
 				}
 			}
 		}
-
+		sumaTotal = suma;
 		JOptionPane.showMessageDialog(null, "Total: "+suma);
 
 
@@ -178,12 +180,12 @@ public class AlgoritmoAsignacion {
 					matrizC[j][i] = minimo;
 				}
 			}
-		}
 
-		return matrizC;		
+
+		}
+		return matrizC;
 	}
 	private int[][] getMinOMax2(int[][] m){
-
 		int [][] matrizC = new int[m.length][m[0].length];
 		for(int i = 0; i < matrizC.length; i++) {
 			if(opcion) {
@@ -196,12 +198,9 @@ public class AlgoritmoAsignacion {
 				for(int j = 0 ;j < matrizC[0].length; j++) {
 					matrizC[i][j] = minimo;
 				}
-			}			
+			}
 		}
-
-		System.out.println("");
-
-		return matrizC;		
+		return matrizC;
 	}
 	private int getMaximo(int[][] m, int indice, boolean estado) {
 		int maximo;

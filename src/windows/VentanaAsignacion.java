@@ -1,8 +1,13 @@
 package windows;
+import Algoritmos.Kramer;
+import Database.Asignacion.AsignacionEnlaceDao;
+import Database.Asignacion.AsignacionGrafDao;
+import Database.Asignacion.AsignacionNodoDao;
 import Database.EnlaceBDD;
 import Database.GrafoBDD;
 import Database.NodoBDD;
 import grafos.Enlace;
+import grafos.Grafo;
 import grafos.Nodo;
 
 import javax.swing.*;
@@ -10,8 +15,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,7 +27,8 @@ public class VentanaAsignacion {
 
 	private int origen;
 	private int destino;
-
+	private int option;
+	int optimo[][] = null;
 	public JFrame frame;
 	LienzoAsignacion lienzoAsignacion;
 	Object [][]mat;
@@ -34,24 +41,30 @@ public class VentanaAsignacion {
 	int actOrigen = -1;
 	int actDestino = -1;
 
-	public String titleWindow= "ALGORITMO DE ASIGNACION";
-	private int[][] matrix;
 	private int[][] MatrizSolucion;
-
-	ExecutorService es = Executors.newFixedThreadPool(2);
-	boolean[] rowDone = new boolean[origen];
-	boolean[] colDone = new boolean[destino];
-	int[][] result = new int[origen][destino];
-
-	public VentanaAsignacion(int origen, int destino) {
+	private String titleWindow= "";
+	public VentanaAsignacion(int origen, int destino, int option) {
 		this.origen = origen;
 		this.destino = destino;
+		this.option = option;
+
 		initialize();
+
 	}
 
 	private void initialize() {
-		
 		frame = new JFrame(titleWindow);
+		switch (option){
+			case 1:
+				titleWindow= "ALGORITMO DE ASIGNACION";
+				frame.setTitle(titleWindow);
+				break;
+			case 2:
+				titleWindow= "ALGORITMO DE KRAMER";
+				frame.setTitle(titleWindow);
+				break;
+		}
+
 		frame.setBounds(100, 100, 890, 647);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -71,7 +84,6 @@ public class VentanaAsignacion {
 		btnNewButton_1_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int option = JOptionPane.showConfirmDialog(null, "SE ELIMINARAN LOS DATOS \nESTA SEGURO DE LIMPIAR EL LIENZO");
-				//System.out.println(lienzo.vertices);
 				if(option ==0) {
 					lienzoAsignacion.g.eliminarGrafo(lienzoAsignacion.vertices);
 					lienzoAsignacion.vectorEnlace.clear();
@@ -95,38 +107,50 @@ public class VentanaAsignacion {
 		btnNewButton_1_3_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String newNombreNodo = JOptionPane.showInputDialog("Ingrese un nombre a guardar");
-				GrafoBDD grafo = new GrafoBDD();
+				Grafo grafo = new Grafo();
 				grafo.setNombre(newNombreNodo);
-				int iddGrafo = grafo.insertGrafo();
-				System.out.println("El ultimo Id es: "+iddGrafo);
-				for(Nodo nodo: lienzoAsignacion.vectorNodosOrigen) {
-					NodoBDD nodoBDD = new NodoBDD();
-					nodoBDD.setX(nodo.getX());
-					nodoBDD.setY(nodo.getY());
-					nodoBDD.setNombre(nodo.getNombre());
-					nodoBDD.setIdGrafo(iddGrafo);
-					nodoBDD.setColorRed(nodo.getColor().getRed());
-					nodoBDD.setColorGreen(nodo.getColor().getGreen());
-					nodoBDD.setColorBlue(nodo.getColor().getBlue());
-					nodoBDD.setNroActividad(nodo.getNroActividad());
-					int idNodo = nodoBDD.insertNodo();
-				}
-				for(Nodo nodo: lienzoAsignacion.vectorNodosDestino) {
-					NodoBDD nodoBDD = new NodoBDD();
-					nodoBDD.setX(nodo.getX());
-					nodoBDD.setY(nodo.getY());
-					nodoBDD.setNombre(nodo.getNombre());
-					nodoBDD.setIdGrafo(iddGrafo);
-					nodoBDD.setColorRed(nodo.getColor().getRed());
-					nodoBDD.setColorGreen(nodo.getColor().getGreen());
-					nodoBDD.setColorBlue(nodo.getColor().getBlue());
-					nodoBDD.setNroActividad(nodo.getNroActividad());
-					int idNodo = nodoBDD.insertNodo();
-				}
-				NodoBDD consultaNodo = new NodoBDD();
-				consultaNodo.setIdGrafo(iddGrafo);
-				ArrayList<NodoBDD>lista= consultaNodo.getNodoByGrafoId();
+				int idGrafo = AsignacionGrafDao.addGrafo(grafo);
 
+				for(Nodo nodo: lienzoAsignacion.vectorNodosOrigen){
+					nodo.setIdGrafo(idGrafo);
+					nodo.setAsignacion(1);
+					AsignacionNodoDao.insertNodo(nodo);
+				}
+
+				for(Nodo nodo: lienzoAsignacion.vectorNodosDestino){
+					nodo.setIdGrafo(idGrafo);
+					nodo.setAsignacion(2);
+					AsignacionNodoDao.insertNodo(nodo);
+				}
+
+				List<Nodo> listaNodoOrigenes = AsignacionNodoDao.getNodoByIdGrafoAndAsignation(idGrafo,1);
+				List<Nodo>listaNodoDestino = AsignacionNodoDao.getNodoByIdGrafoAndAsignation(idGrafo,2);
+				int idNodoInicio = 0;
+				int idNodoFin = 0;
+
+				for(Enlace enlace:lienzoAsignacion.vectorEnlace){
+					for(Nodo nodo: listaNodoOrigenes){
+						if(enlace.getNroActividadNodoInicio()==nodo.getNroActividad()){
+							idNodoInicio= nodo.getIdNodo();
+							break;
+						}
+					}
+					for(Nodo nodo: listaNodoDestino){
+						if(enlace.getNroActividadNodoFin()==  nodo.getNroActividad()){
+							idNodoFin = nodo.getIdNodo();
+							break;
+						}
+					}
+
+					enlace.setIdGrafo(idGrafo);
+					enlace.setIdNodoInicio(idNodoInicio);
+					enlace.setIdNodoFin(idNodoFin);
+					System.out.print("EL ID origen ES: "+enlace.getIdNodoInicio());
+					System.out.print("EL ID destino ES: "+enlace.getIdNodoFin());
+					AsignacionEnlaceDao.insertEnlace(enlace);
+
+				}
+				JOptionPane.showMessageDialog(null,"SE HAN REGISTRADO LOS DATOS");
 			}
 		});
 		btnNewButton_1_3_1.setForeground(Color.WHITE);
@@ -140,6 +164,63 @@ public class VentanaAsignacion {
 		
 		btnNewButton_1_3_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				List<Grafo> lista = AsignacionGrafDao.listGrafos();
+				String[]listaCombo= new String[lista.size()];
+				for(int i=0;i<lista.size();i++) {
+					listaCombo[i] = lista.get(i).getNombre();
+				}
+
+				JComboBox comboBox = new JComboBox(listaCombo);
+				comboBox.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						int ob=comboBox.getSelectedIndex();
+						for(int i=0;i<lista.size();i++) {
+							if(ob==i) {
+								index = lista.get(i).getIdGrafo();
+							}
+						}
+
+					}
+				});
+				comboBox.setBounds(88, 62, 177, 20);
+				JOptionPane.showMessageDialog(null, comboBox, "SELECCIONE UN ARCHIVO", 1);
+
+				lienzoAsignacion.g.eliminarGrafo(lienzoAsignacion.vertices);
+				lienzoAsignacion.vectorEnlace.clear();
+				lienzoAsignacion.vectorNodosDestino.clear();
+				lienzoAsignacion.vectorNodosOrigen.clear();
+				lienzoAsignacion.contadorInicio = 0;
+				lienzoAsignacion.contadorDestino = 0;
+				lienzoAsignacion.repaint();
+
+				List<Nodo>listNodosOrigen = AsignacionNodoDao.getNodoByIdGrafoAndAsignation(index,1);
+				List<Nodo>listNodosDestino = AsignacionNodoDao.getNodoByIdGrafoAndAsignation(index,2);
+
+				origen = listNodosOrigen.size();
+				destino = listNodosDestino.size();
+				lienzoAsignacion.matrizCostos = new int[origen][destino];
+
+				for (Nodo nodo:listNodosOrigen){
+					lienzoAsignacion.vectorNodosOrigen.add(nodo);
+				}
+
+				for (Nodo nodo:listNodosDestino){
+					lienzoAsignacion.vectorNodosDestino.add(nodo);
+				}
+				List<Enlace>listEnlaces = AsignacionEnlaceDao.getListEnlaceByIdGrafo(index);
+				System.out.println(listEnlaces.size());
+				for(Enlace enlace:listEnlaces){
+					lienzoAsignacion.vectorEnlace.add(enlace);
+					lienzoAsignacion.insertaArista(enlace.getNroActividadNodoInicio(), enlace.getNroActividadNodoFin(), enlace.getAtributo());
+				}
+
+
+
+
+				lienzoAsignacion.repaint();
+
+
+
 
 			}
 		});
@@ -152,6 +233,19 @@ public class VentanaAsignacion {
 		JButton btnNewButton_1_3_2_1 = new JButton("ATRAS");
 		btnNewButton_1_3_2_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				/**
+				System.out.println("");
+				for (Nodo nodo:lienzoAsignacion.vectorNodosOrigen){
+					System.out.println(nodo);
+				}
+				System.out.println("");
+				for (Nodo nodo:lienzoAsignacion.vectorNodosDestino){
+					System.out.println(nodo);
+				}
+				System.out.println("");
+				for(Enlace enlace:lienzoAsignacion.vectorEnlace){
+					System.out.println(enlace);
+				}**/
 				VentanaPrincipal window=new VentanaPrincipal();
 				window.frame.setLocationRelativeTo(null);
 				window.frame.setVisible(true);
@@ -167,65 +261,14 @@ public class VentanaAsignacion {
 		JButton btnAsignacion = new JButton("EJECUTAR");
 		btnAsignacion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String []menu= {"Maximo","Minimo"};
-				int optimo[][] = null;
-				String valor = (String)JOptionPane.showInputDialog(null, "seleccionar opcion", "opciones",JOptionPane.DEFAULT_OPTION, null, menu,menu[0]);
-				if (valor.equalsIgnoreCase ("Maximo")) {
-					if(lienzoAsignacion.vectorNodosDestino.size() !=lienzoAsignacion.vectorNodosOrigen.size()){
-						int max = lienzoAsignacion.vectorNodosDestino.size();
-						int matAux[][] = new int[max][max];
-						for(int i=0;i<max;i++){
-							for(int j=0;j<max;j++){
-								try{
-									matAux[i][j]=lienzoAsignacion.matrizCostos[i][j];
-								}catch (ArrayIndexOutOfBoundsException e){
-									matAux[i][j] = 0;
-								}
-
-							}
-						}
-						AlgoritmoAsignacion cc = new AlgoritmoAsignacion (matAux, true);
-						cc.efectuarAlgoritmo();
-						optimo = cc.getMatrizOptimo();
-					}else{
-						AlgoritmoAsignacion cc = new AlgoritmoAsignacion (lienzoAsignacion.matrizCostos, true);
-						cc.efectuarAlgoritmo();
-						optimo = cc.getMatrizOptimo();
-					}
+				switch (option){
+					case 1:
+						ejecutarAsignacion();
+						break;
+					case 2:
+						ejecutarKramer();
+						break;
 				}
-				if (valor.equalsIgnoreCase ("Minimo")) {
-					if(lienzoAsignacion.vectorNodosOrigen.size() != lienzoAsignacion.vectorNodosDestino.size()){
-						int max = lienzoAsignacion.vectorNodosDestino.size();
-						int matAux[][] = new int[max][max];
-						for(int i=0;i<max;i++){
-							for(int j=0;j<max;j++){
-								try{
-									matAux[i][j]=lienzoAsignacion.matrizCostos[i][j];
-								}catch (ArrayIndexOutOfBoundsException e){
-									matAux[i][j] = 0;
-								}
-							}
-						}
-						AlgoritmoAsignacion cc = new AlgoritmoAsignacion (matAux, true);
-						cc.efectuarAlgoritmo();
-						optimo = cc.getMatrizOptimo();
-					}
-				}else{
-					AlgoritmoAsignacion cc = new AlgoritmoAsignacion (lienzoAsignacion.matrizCostos, false);
-					cc.efectuarAlgoritmo();
-					optimo = cc.getMatrizOptimo();
-				}
-				int mat[][] = lienzoAsignacion.matrizCostos;
-				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen, lienzoAsignacion.vectorNodosDestino, mat);
-				window.setLocationRelativeTo(null);
-				window.setVisible(true);
-
-				JFrame ventanaMatriz = new JFrame("Matriz de Adyacentes");
-				ventanaMatriz.setSize(500, 300);
-				JTextArea matriz  = new JTextArea(lienzoAsignacion.imprimirMatrizAdyString(optimo));
-				ventanaMatriz.add(new JScrollPane(matriz), BorderLayout.CENTER);
-				ventanaMatriz.setVisible(true);
-				ventanaMatriz.setLocationRelativeTo(null);
 
 			}
 		});
@@ -235,39 +278,179 @@ public class VentanaAsignacion {
 		btnAsignacion.setBounds(25, 11, 160, 30);
 		panel_1.add(btnAsignacion);
 
-		JButton btnKramer = new JButton("KRAMER");
-		btnKramer.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				ArrayList<Integer> ofertas=generarArreglo(lienzoAsignacion.vectorNodosOrigen);
-				ArrayList<Integer> demandas=generarArreglo(lienzoAsignacion.vectorNodosDestino);
-				int mat[][] = lienzoAsignacion.matrizCostos;
 
-				String []menu= {"Maximo","Minimo"};
-				int optimo[][] = null;
-				String valor = (String)JOptionPane.showInputDialog(null, "seleccionar opcion", "opciones",JOptionPane.DEFAULT_OPTION, null, menu,menu[0]);
-
-				if (valor.equalsIgnoreCase ("Maximo")) {
-
-					MatrizSolucion=Noro9(mat,demandas,ofertas,origen,destino);
-					JTable tabla= printMatrix(MatrizSolucion,origen,destino);
-					tabla.setBounds(60,400,400,200);
-					tabla.setAutoResizeMode(1);
-					frame.add(tabla);
-					mostrar(MatrizSolucion);
-					CostoTotal(mat,MatrizSolucion);
-				}
-				if (valor.equalsIgnoreCase ("Minimo")) {
-				}
-			}
-		});
-
-		btnKramer.setForeground(Color.WHITE);
-		btnKramer.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 13));
-		btnKramer.setBackground(new Color(21, 88, 16));
-		btnKramer.setBounds(25, 52, 160, 30);
-		panel_1.add(btnKramer);
 		
 	}
+
+	private void ejecutarKramer() {
+		int[] ofertas=generarArreglo(lienzoAsignacion.vectorNodosOrigen, "ENTER SUPPLIES");
+		int[] demandas=generarArreglo(lienzoAsignacion.vectorNodosDestino, "ENTER DEMANDS");
+		int mat[][] = lienzoAsignacion.matrizCostos;
+
+		String []menu= {"Maximo","Minimo"};
+		int optimo[][] = null;
+		String valor = (String)JOptionPane.showInputDialog(null, "seleccionar opcion", "opciones",JOptionPane.DEFAULT_OPTION, null, menu,menu[0]);
+
+		if (valor.equalsIgnoreCase ("Minimo")) {
+
+			Kramer kramer = new Kramer(demandas,ofertas,mat);
+			kramer.init();
+			kramer.northWestCornerRule();
+			kramer.minimizar();
+			int [][] matrix = kramer.printResult();
+			for(int i=0;i<ofertas.length;i++){
+				for(int j=0;j<demandas.length;j++){
+					System.out.print(matrix[i][j]+"\t");
+				}
+				System.out.println("");
+			}
+			System.out.println("EL TOTAL DE COSTOS ES: "+kramer.getTotalCosts());
+			VentanaResultsKramer window=new VentanaResultsKramer(origen, destino, lienzoAsignacion.vectorNodosOrigen, lienzoAsignacion.vectorNodosDestino, ofertas, demandas, mat,matrix, kramer.getTotalCosts());
+			window.setLocationRelativeTo(null);
+			window.setVisible(true);
+		}
+		if (valor.equalsIgnoreCase ("Maximo")) {
+
+			Kramer kramer = new Kramer(demandas,ofertas,mat);
+			kramer.init();
+			kramer.northWestCornerRule();
+			kramer.maximizar();
+			int [][] matrix = kramer.printResult();
+			for(int i=0;i<ofertas.length;i++){
+				for(int j=0;j<demandas.length;j++){
+					System.out.print(matrix[i][j]+"\t");
+				}
+				System.out.println("");
+			}
+			System.out.println("EL TOTAL DE COSTOS ES: "+kramer.getTotalCosts());
+			VentanaResultsKramer window=new VentanaResultsKramer(origen, destino, lienzoAsignacion.vectorNodosOrigen, lienzoAsignacion.vectorNodosDestino, ofertas, demandas, mat,matrix, kramer.getTotalCosts());
+			window.setLocationRelativeTo(null);
+			window.setVisible(true);
+
+
+		}
+	}
+
+	private void ejecutarAsignacion() {
+		String []menu= {"Maximo","Minimo"};
+
+
+
+		String valor = (String)JOptionPane.showInputDialog(null, "seleccionar opcion", "opciones",JOptionPane.DEFAULT_OPTION, null, menu,menu[0]);
+		if (valor.equalsIgnoreCase ("Maximo")) {
+			if(lienzoAsignacion.vectorNodosDestino.size() !=lienzoAsignacion.vectorNodosOrigen.size()){
+				int max = lienzoAsignacion.vectorNodosDestino.size();
+				int matAux[][] = new int[max][max];
+				for(int i=0;i<max;i++){
+					for(int j=0;j<max;j++){
+						try{
+							matAux[i][j]=lienzoAsignacion.matrizCostos[i][j];
+						}catch (ArrayIndexOutOfBoundsException e){
+							matAux[i][j] = 0;
+						}
+
+					}
+				}
+				AlgoritmoAsignacion cc = new AlgoritmoAsignacion (matAux, true);
+				cc.efectuarAlgoritmo();
+				optimo = cc.getMatrizOptimo();
+
+				int mat[][] = lienzoAsignacion.matrizCostos;
+				int matResta[][] = cc.resta1;
+				cc.letra(cc.matrizAdyacente,cc.cambiar(cc.matrizResultados));
+				String[][] matResultados = cc.orden(cc.matrizAdyacente,cc.cambiar(cc.matrizResultados));
+
+				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen, lienzoAsignacion.vectorNodosDestino, mat, matResta,matResultados, cc.sumaTotal);
+				window.setLocationRelativeTo(null);
+				window.setVisible(true);
+
+
+			}else{
+
+				System.out.println("MATRIZ");
+				for(int i=0;i< lienzoAsignacion.matrizCostos.length;i++){
+					for(int j=0;j< lienzoAsignacion.matrizCostos.length;j++){
+
+						System.out.println(lienzoAsignacion.matrizCostos[i][j]+"\t");
+					}
+					System.out.println("");
+				}
+
+				AlgoritmoAsignacion cc = new AlgoritmoAsignacion (lienzoAsignacion.matrizCostos, true);
+				cc.efectuarAlgoritmo();
+				optimo = cc.getMatrizOptimo();
+
+				int mat[][] = lienzoAsignacion.matrizCostos;
+				int matResta[][] = cc.resta1;
+
+				String[][] matResultados = cc.orden(cc.matrizAdyacente,cc.cambiar(cc.matrizResultados));
+				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen, lienzoAsignacion.vectorNodosDestino, mat, matResta,matResultados,cc.sumaTotal);
+				window.setLocationRelativeTo(null);
+				window.setVisible(true);
+			}
+		}
+		if (valor.equalsIgnoreCase ("Minimo")) {
+
+			if(lienzoAsignacion.vectorNodosOrigen.size() != lienzoAsignacion.vectorNodosDestino.size()){
+				int max = lienzoAsignacion.vectorNodosDestino.size();
+				int matAux[][] = new int[max][max];
+				for(int i=0;i<max;i++){
+					for(int j=0;j<max;j++){
+						try{
+							matAux[i][j]=lienzoAsignacion.matrizCostos[i][j];
+						}catch (ArrayIndexOutOfBoundsException e){
+							matAux[i][j] = 0;
+						}
+					}
+				}
+				AlgoritmoAsignacion cc = new AlgoritmoAsignacion (matAux, true);
+				cc.efectuarAlgoritmo();
+
+				int mat[][] = lienzoAsignacion.matrizCostos;
+				int matResta[][] = cc.resta1;
+
+				String[][] matResultados = cc.orden(cc.matrizAdyacente,cc.cambiar(cc.matrizResultados));
+				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen, lienzoAsignacion.vectorNodosDestino, mat, matResta,matResultados,cc.sumaTotal);
+				window.setLocationRelativeTo(null);
+				window.setVisible(true);
+
+				//optimo = cc.getMatrizOptimo();
+			}else{
+				AlgoritmoAsignacion cc = new AlgoritmoAsignacion (lienzoAsignacion.matrizCostos, false);
+				cc.efectuarAlgoritmo();
+
+				int mat[][] = lienzoAsignacion.matrizCostos;
+				int matResta[][] = cc.resta1;
+
+				String[][] matResultados = cc.orden(cc.matrizAdyacente,cc.cambiar(cc.matrizResultados));
+				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen, lienzoAsignacion.vectorNodosDestino, mat, matResta,matResultados,cc.sumaTotal);
+				window.setLocationRelativeTo(null);
+				window.setVisible(true);
+				//optimo = cc.getMatrizOptimo();
+			}
+		}
+
+
+		//System.out.print("tamaño: "+optimo.length);
+		/**
+		System.out.print("matriz");
+		for(int i=0;i<optimo.length;i++){
+			for(int j=0;j<optimo.length;j++){
+				System.out.print(optimo[i][j]+"\t");
+			}
+			System.out.println("");
+		}
+
+		JTextArea matriz  = new JTextArea(lienzoAsignacion.imprimirMatrizAdyString(optimo));
+
+		JFrame ventanaMatriz = new JFrame("Matriz de Adyacentes");
+		ventanaMatriz.setSize(500, 300);
+		ventanaMatriz.add(new JScrollPane(matriz), BorderLayout.CENTER);
+		ventanaMatriz.setVisible(true);
+		ventanaMatriz.setLocationRelativeTo(null);**/
+
+	}
+
 	public static void CostoTotal(int[][]matriz,int[][]matrizSolu){
 
 		int suma=0;
@@ -314,9 +497,9 @@ public class VentanaAsignacion {
 		return matrizSolucion;
 	}
 
-	private ArrayList<Integer> generarArreglo(Vector<Nodo> vectorNodos) {
+	private int[] generarArreglo(Vector<Nodo> vectorNodos, String titleWindow) {
 		Object[] fieldsOrigen = new Object[vectorNodos.size()*2];
-		ArrayList<Integer> matIntOrigen = new ArrayList<Integer>();
+		int[] matIntOrigen = new int[vectorNodos.size()];
 
 		for(int i=0;i<vectorNodos.size();i++){
 			fieldsOrigen[i*2] = vectorNodos.get(i).getNombre();
@@ -325,18 +508,18 @@ public class VentanaAsignacion {
 			fieldsOrigen[i*2+1] = new JTextField();;
 		}
 		JOptionPane.showConfirmDialog(null,fieldsOrigen,
-				"LLENE LOS RECUADROS", JOptionPane.OK_CANCEL_OPTION);
+				titleWindow, JOptionPane.OK_CANCEL_OPTION);
 
 		for(int i=0;i<vectorNodos.size();i++){
 			JTextField auxiiar = (JTextField)fieldsOrigen[i*2+1];
 			try{
-				matIntOrigen.add(Integer.parseInt(auxiiar.getText()));
+				matIntOrigen[i] = Integer.parseInt(auxiiar.getText());
 			}catch (NumberFormatException e){
-				matIntOrigen.add(0);
+				matIntOrigen[i] = 0;
 			}
 		}
 		for(int i=0;i<vectorNodos.size();i++){
-			System.out.println(matIntOrigen.get(i));
+			System.out.println(matIntOrigen[i]);
 		}
 		return matIntOrigen;
 	}

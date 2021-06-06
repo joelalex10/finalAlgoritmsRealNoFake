@@ -24,7 +24,11 @@ public class Enlace {
 	private int thickness;
 	private boolean ciclo;
 	private int holgura;
-	
+	private int idGrafo;
+	private int idNodoInicio;
+	private int idNodoFin;
+
+
 	private boolean isJohnson=false;
 
 	/***public Enlace(int x1, int y1, int x2, int y2, int atributo,int thickness, 
@@ -299,5 +303,29 @@ public class Enlace {
 				", ciclo=" + ciclo +
 				", holgura=" + holgura +
 				'}';
+	}
+
+	public int getIdNodoInicio() {
+		return idNodoInicio;
+	}
+
+	public void setIdNodoInicio(int idNodoInicio) {
+		this.idNodoInicio = idNodoInicio;
+	}
+
+	public int getIdNodoFin() {
+		return idNodoFin;
+	}
+
+	public void setIdNodoFin(int idNodoFin) {
+		this.idNodoFin = idNodoFin;
+	}
+
+	public int getIdGrafo() {
+		return idGrafo;
+	}
+
+	public void setIdGrafo(int idGrafo) {
+		this.idGrafo = idGrafo;
 	}
 }

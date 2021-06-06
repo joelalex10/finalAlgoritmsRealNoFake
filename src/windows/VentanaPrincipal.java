@@ -90,7 +90,7 @@ public class VentanaPrincipal {
 		frame.getContentPane().add(lienzo);
 		
 		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(0, 510, 864, 87);
+		panel_1.setBounds(0, 510, 864, 127);
 		frame.getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 		
@@ -565,7 +565,7 @@ public class VentanaPrincipal {
 				String strDestino = JOptionPane.showInputDialog("Introducir maximo nodos destino");
 				int destino = Integer.parseInt(strDestino);
 
-				VentanaAsignacion window=new VentanaAsignacion(origen, destino);
+				VentanaAsignacion window=new VentanaAsignacion(origen, destino,1);
 				window.frame.setLocationRelativeTo(null);
 				window.frame.setVisible(true);
 				frame.dispose();
@@ -579,33 +579,72 @@ public class VentanaPrincipal {
 		panel_1.add(btnAsignacion);
 
 
+		JButton btnKramer = new JButton("KRAMER");
+		btnKramer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String strOrigen = JOptionPane.showInputDialog("Enter the number of supplies");
+				int origen = Integer.parseInt(strOrigen);
+				String strDestino = JOptionPane.showInputDialog("enter the number of demands");
+				int destino = Integer.parseInt(strDestino);
 
+				VentanaAsignacion window=new VentanaAsignacion(origen, destino,2);
+				window.frame.setLocationRelativeTo(null);
+				window.frame.setVisible(true);
+				frame.dispose();
+			}
+		});
 
+		btnKramer.setForeground(Color.WHITE);
+		btnKramer.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 13));
+		btnKramer.setBackground(new Color(21, 88, 16));
+		btnKramer.setBounds(25, 93, 160, 30);
+		panel_1.add(btnKramer);
 
-		
-		
-		
-		
-		
-		
+		JButton btnTrees = new JButton("ARBOLES");
+		btnTrees.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+
+		btnTrees.setForeground(Color.WHITE);
+		btnTrees.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 13));
+		btnTrees.setBackground(new Color(21, 88, 16));
+		btnTrees.setBounds(184, 93, 160, 30);
+		panel_1.add(btnTrees);
+
+		btnKramer.setForeground(Color.WHITE);
+		btnKramer.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 13));
+		btnKramer.setBackground(new Color(21, 88, 16));
+		btnKramer.setBounds(25, 93, 160, 30);
+		panel_1.add(btnKramer);
+
+		JButton btnSorts = new JButton("SORTS");
+		btnSorts.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				VentanaSorts window = new VentanaSorts();
+				window.setLocationRelativeTo(null);
+				window.setVisible(true);
+				frame.dispose();
+
+			}
+		});
+
+		btnSorts.setForeground(Color.WHITE);
+		btnSorts.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 13));
+		btnSorts.setBackground(new Color(21, 88, 16));
+		btnSorts.setBounds(343, 93, 160, 30);
+		panel_1.add(btnSorts);
+
+		JButton btnCompet = new JButton("COMPET");
+		btnCompet.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+
+		btnCompet.setForeground(Color.WHITE);
+		btnCompet.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 13));
+		btnCompet.setBackground(new Color(21, 88, 16));
+		btnCompet.setBounds(502, 93, 160, 30);
+		panel_1.add(btnCompet);
 	}
-	/*****************
-	public HashMap<String, ArrayList<Integer>> saveListAtributos(){
-		HashMap<String, ArrayList<Integer>> listaAtributos = new HashMap();
-		int sumMax = 0;
-		for(Nodo nodo: lienzo.vectorNodos) {
-			//int sizeEnlaceEntrante = nodo.getEnlaceEntrantes().size();
-			//int sizeEnlaceSaliente = nodo.getEnlaceSalientes().size();
-			int sumVal = 0;
-			ArrayList<Integer>lista = new ArrayList<>();
-			//for(int i=0;i<sizeEnlaceEntrante;i++) {
-			//	int atributo = nodo.getEnlaceEntrantes().get(i).getAtributo();
-			//	lista.add(atributo );
-			//}
-			//listaAtributos.put(nodo.getNombre(),lista);
-		}
-		return listaAtributos;
-		
-	}*/
-	
 }

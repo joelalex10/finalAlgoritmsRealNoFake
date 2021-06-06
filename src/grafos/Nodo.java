@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Nodo {
+	private int idNodo;
 	private int x;
 	private int y;
 	public static final int d = 50;
@@ -17,6 +18,8 @@ public class Nodo {
 	private boolean origenAsignacion;
 	private  boolean destinoAsignacion;
 	private int definicion;
+	private int idGrafo;
+	public int asignacion;
 	
 	
 	public Nodo() {
@@ -123,5 +126,29 @@ public class Nodo {
 
 	public void setNroActividad(int nroActividad) {
 		this.nroActividad = nroActividad;
+	}
+
+	public int getIdGrafo() {
+		return idGrafo;
+	}
+
+	public void setIdGrafo(int idGrafo) {
+		this.idGrafo = idGrafo;
+	}
+
+	public int getAsignacion() {
+		return asignacion;
+	}
+
+	public void setAsignacion(int asignacion) {
+		this.asignacion = asignacion;
+	}
+
+	public int getIdNodo() {
+		return idNodo;
+	}
+
+	public void setIdNodo(int idNodo) {
+		this.idNodo = idNodo;
 	}
 }
