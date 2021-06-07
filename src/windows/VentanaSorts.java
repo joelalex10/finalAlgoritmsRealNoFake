@@ -1,5 +1,10 @@
 package windows;
 
+import Database.EnlaceBDD;
+import Database.GrafoBDD;
+import Database.NodoBDD;
+import Database.Sorts.Dao.SortDao;
+import Database.Sorts.Model.SortModel;
 import grafos.Enlace;
 import grafos.Nodo;
 
@@ -8,6 +13,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class VentanaSorts extends JFrame {
 
@@ -17,6 +24,7 @@ public class VentanaSorts extends JFrame {
 
     JTextArea jTextArea1;
     JTextArea jTextArea2;
+    private int index = 0;
 
     public VentanaSorts(){
         if(basta){
@@ -61,8 +69,8 @@ public class VentanaSorts extends JFrame {
 
         int x1 = 180;
         int y1 = 20;
-        int widht = 402;
-        int height = 100;
+        int widht = 600;
+        int height = 200;
         jTextArea1 = new JTextArea();
         jTextArea1.setBounds(x1, y1, widht, height);
         getContentPane().add(jTextArea1);
@@ -73,13 +81,13 @@ public class VentanaSorts extends JFrame {
         scrollBar.setBounds(x1-3, y1, widht+11, height+15);
         JLabel jLabelResultados = new JLabel();
         jLabelResultados.setText("RESULTADOS");
-        jLabelResultados.setBounds(30,140,140,40);
+        jLabelResultados.setBounds(30,y1+height+25,140,40);
         add(jLabelResultados);
 
         int x2 = 180;
-        int y2 = 145;
-        int widht2 = 402;
-        int height2 = 100;
+        int y2 = y1+height+25;
+        int widht2 = 600;
+        int height2 = height;
         jTextArea2 = new JTextArea();
         jTextArea2.setBounds(x2, y2, widht2, height2);
         getContentPane().add(jTextArea2);
@@ -90,7 +98,7 @@ public class VentanaSorts extends JFrame {
         scrollBar2.setBounds(x2-3, y2, widht2+11, height2+15);
 
         JLabel labelControl = new JLabel();
-        labelControl.setBounds(180,275,200,30);
+        labelControl.setBounds(180,y1+height*2+50,200,30);
         labelControl.setText("Tiempo en milisegundos");
         getContentPane().add(labelControl);
 
@@ -252,6 +260,115 @@ public class VentanaSorts extends JFrame {
         btnNewButton_1_1_1.setBackground(new Color(21, 88, 16));
         btnNewButton_1_1_1.setBounds(663, 11, 160, 30);
         panel_1.add(btnNewButton_1_1_1);
+
+        JButton btnNewButton_1_3 = new JButton("RANDOM");
+        btnNewButton_1_3.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+
+                String random = "";
+
+                String srtNumber = JOptionPane.showInputDialog("Ingrese la cantidad de numeros a randomizar");
+                int size = Integer.parseInt(srtNumber);
+                JTextField tfLim1 = new JTextField();
+                JTextField tfLim2 = new JTextField();
+
+                Object[] fieldsOrigen ={
+                    new JLabel("Limite inferior"),
+                        tfLim1,
+                    new JLabel("Limite superior"),
+                        tfLim2
+                };
+                JOptionPane.showConfirmDialog(null,fieldsOrigen,
+                        "INGRESE LIMITES", JOptionPane.OK_CANCEL_OPTION);
+
+                int lim1 = Integer.parseInt(tfLim1.getText());
+                int lim2 = Integer.parseInt(tfLim2.getText());
+
+                for(int i=0;i<size;i++){
+                    int randNumber = (int)(Math.random()*(lim2-lim1+1)+lim1);
+                    if(i==size){
+                        random+=randNumber;
+                    }else{
+                        random+=randNumber+",";
+                    }
+                    jTextArea1.setText(random);
+
+                }
+
+
+            }
+        });
+        btnNewButton_1_3.setForeground(Color.WHITE);
+        btnNewButton_1_3.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 13));
+        btnNewButton_1_3.setBackground(new Color(21, 88, 16));
+        btnNewButton_1_3.setBounds(184, 52, 160, 30);
+        panel_1.add(btnNewButton_1_3);
+
+        JButton btnNewButton_1_3_1 = new JButton("GUARDAR");
+        btnNewButton_1_3_1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                String title = JOptionPane.showInputDialog("Ingrese el nombre del archivo con el que quiere guardar");
+                try {
+                    SortModel sort = new SortModel();
+                    sort.setSort(jTextArea1.getText());
+                    sort.setName(title);
+                    SortDao.insertSort(sort);
+                    JOptionPane.showMessageDialog(null,"SE HAN REGISTRADO LOS DATOS DE MANERA CORRECTA");
+                }catch (Exception e){
+
+                    JOptionPane.showMessageDialog(null,"HA OCURRIDO UN ERROR");
+                }
+
+
+
+            }
+        });
+        btnNewButton_1_3_1.setForeground(Color.WHITE);
+        btnNewButton_1_3_1.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 13));
+        btnNewButton_1_3_1.setBackground(new Color(21, 88, 16));
+        btnNewButton_1_3_1.setBounds(343, 52, 160, 30);
+        panel_1.add(btnNewButton_1_3_1);
+
+
+        JButton btnNewButton_1_3_2 = new JButton("CARGAR DATOS");
+
+
+        btnNewButton_1_3_2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+
+                List<SortModel> lista = SortDao.getListSorts();
+                String[]listaCombo= new String[lista.size()];
+                for(int i=0;i<lista.size();i++) {
+                    listaCombo[i] = lista.get(i).getName();
+                }
+                JComboBox comboBox = new JComboBox(listaCombo);
+                comboBox.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        int ob=comboBox.getSelectedIndex();
+                        for(int i=0;i<lista.size();i++) {
+                            if(ob==i) {
+                                index = i;
+                            }
+                        }
+
+                    }
+                });
+                comboBox.setBounds(88, 62, 177, 20);
+                JOptionPane.showMessageDialog(null, comboBox, "SELECCIONE UN ARCHIVO", 1);
+                System.out.println("EL INDICE ES; "+index);
+                jTextArea1.setText(lista.get(index).getSort());
+                JOptionPane.showMessageDialog(null, "SE HAN CARGADO LOS DATOS");
+
+
+
+
+            }
+        });
+        btnNewButton_1_3_2.setForeground(Color.WHITE);
+        btnNewButton_1_3_2.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 13));
+        btnNewButton_1_3_2.setBackground(new Color(21, 88, 16));
+        btnNewButton_1_3_2.setBounds(502, 52, 160, 30);
+        panel_1.add(btnNewButton_1_3_2);
 
     }
 

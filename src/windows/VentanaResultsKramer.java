@@ -3,6 +3,7 @@ package windows;
 import grafos.Nodo;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -64,35 +65,58 @@ public class VentanaResultsKramer extends JFrame {
 
         for(int i=0;i<vecNodo1.size();i++){
             matriz[i+1][0].setText(vecNodo1.get(i).getNombre());
+            matriz[i+1][0].setBackground(new Color(9,11,48));
+            matriz[i+1][0].setForeground(Color.white);
+
             //matriz[i+1][0].setEnabled(false);
         }
         for(int i=0;i<vecNodo2.size();i++){
             matriz[0][i+1].setText(vecNodo2.get(i).getNombre());
+
+            matriz[0][i+1].setBackground(new Color(9,11,48));
+            matriz[0][i+1].setForeground(Color.white);
             //matriz[0][i+1].setEnabled(false);
         }
 
         for(int i=0;i<vecNodo1.size();i++){
             matriz[i+1][vecNodo1.size()+2].setText(valOfertas[i]+"");
             //matriz[i+1][vecNodo1.size()+2].setEnabled(false);
+            matriz[i+1][vecNodo1.size()+2].setBackground(new Color(9,11,48));
+            matriz[i+1][vecNodo1.size()+2].setForeground(Color.white);
         }
 
         for(int i=0;i<supplies;i++){
             for(int j=0;j<demands;j++){
                 matriz[i+1][j+1].setText(matirxCoast[i][j]+" -> "+results[i][j]);
+                if(results[i][j]!=0){
+                    matriz[i+1][j+1].setBackground(new Color(21, 88, 16));
+                    matriz[i+1][j+1].setForeground(Color.white);
+
+
+
+                }
+
             }
         }
         System.out.println(vecNodo2.size());
 
         for(int i=0;i<vecNodo2.size();i++){
             matriz[vecNodo2.size()][i+1].setText(valDemandas[i]+"");
+            matriz[vecNodo2.size()][i+1].setBackground(new Color(9,11,48));
+            matriz[vecNodo2.size()][i+1].setForeground(Color.white);
             //matriz[vecNodo2.size()][i+1].setEnabled(false);
         }
 
         matriz[0][0].setVisible(false);
         //matriz[supplies+1][demands+1].setVisible(false);
         matriz[0][demands+1].setText("Oferta");
+        matriz[0][demands+1].setBackground(new Color(9,11,48));
+        matriz[0][demands+1].setForeground(Color.white);
         //matriz[0][demands+1].setEnabled(false);
         matriz[supplies+1][0].setText("Demanda");
+
+        matriz[supplies+1][0].setBackground(new Color(9,11,48));
+        matriz[supplies+1][0].setForeground(Color.white);
         //matriz[supplies+1][0].setEnabled(false);
 
         JLabel jLabel = new JLabel();

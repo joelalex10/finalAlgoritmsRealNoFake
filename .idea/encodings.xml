@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/src/GrafoCompet/EnlaceCompet.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/GrafoCompet/NodoCompet.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/GrafoCompet/PosicionCompet.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/windows/DibujoCompet.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/windows/SimuladorArbolBinario.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/windows/VentanaArboles.java" charset="UTF-8" />
     <file url="PROJECT" charset="windows-1252" />
   </component>
 </project>

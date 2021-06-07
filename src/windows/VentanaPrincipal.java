@@ -1,25 +1,12 @@
 package windows;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Rectangle;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumnModel;
 
 import Algoritmos.Johnson;
 import Database.EnlaceBDD;
@@ -33,7 +20,6 @@ import javax.swing.JComboBox;
 
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.awt.event.ActionEvent;
 
@@ -51,7 +37,27 @@ public class VentanaPrincipal {
 	/**
 	 * Launch the application.
 	 */
+
+
+
+
 	public static void main(String[] args) {
+		try {
+			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+				if ("Nimbus".equals(info.getName())) {
+					javax.swing.UIManager.setLookAndFeel(info.getClassName());
+					break;
+				}
+			}
+		} catch (ClassNotFoundException ex) {
+			java.util.logging.Logger.getLogger(VentanaArboles.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		} catch (InstantiationException ex) {
+			java.util.logging.Logger.getLogger(VentanaArboles.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		} catch (IllegalAccessException ex) {
+			java.util.logging.Logger.getLogger(VentanaArboles.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
+			java.util.logging.Logger.getLogger(VentanaArboles.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+		}
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -603,6 +609,15 @@ public class VentanaPrincipal {
 		JButton btnTrees = new JButton("ARBOLES");
 		btnTrees.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				VentanaArboles window=new VentanaArboles();
+				window.setLocationRelativeTo(null);
+				window.setVisible(true);
+				frame.dispose();
+				/**VentanaArbol window = new VentanaArbol();
+				window.setLocationRelativeTo(null);
+				window.setVisible(true);
+				frame.dispose();*/
+
 			}
 		});
 
@@ -638,6 +653,10 @@ public class VentanaPrincipal {
 		JButton btnCompet = new JButton("COMPET");
 		btnCompet.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				VentanaCompet window=new VentanaCompet();
+				window.setLocationRelativeTo(null);
+				window.setVisible(true);
+				frame.dispose();
 			}
 		});
 

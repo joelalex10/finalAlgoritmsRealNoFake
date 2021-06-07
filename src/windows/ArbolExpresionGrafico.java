@@ -1,14 +1,17 @@
 
-package ArbolGrafico;
+package windows;
 
   /**
  *
  * @author ploks
  */
 
-import java.awt.*;
-import java.util.*;
+import grafoArboles.Arbol;
+import grafoArboles.NodoArbol;
+
 import javax.swing.*;
+import java.awt.*;
+import java.util.HashMap;
 
 
 public class ArbolExpresionGrafico extends JPanel 
@@ -26,13 +29,13 @@ public class ArbolExpresionGrafico extends JPanel
      * Constructor de la clase ArbolExpresionGrafico.
      * El constructor permite inicializar los atributos de la clase ArbolExpresionGrafico
      * y llama al método repaint(), que es el encargado de pintar el Arbol.
-     * @param miExpresion: dato de tipo ArbolExpresion que contiene el Arbol a
+     * @parammiExpresion: dato de tipo ArbolExpresion que contiene el Arbol a
      * dibujar.
      */
-    public ArbolExpresionGrafico(Arbol miArbol) 
+    public ArbolExpresionGrafico(Arbol miArbol)
     {
           this.miArbol = miArbol;
-          this.setBackground(Color.WHITE);
+          this.setBackground(new Color(66,68,65));
           posicionNodos = new HashMap();
           subtreeSizes = new HashMap();
           dirty = true;
@@ -49,10 +52,10 @@ public class ArbolExpresionGrafico extends JPanel
     {
          posicionNodos.clear();
          subtreeSizes.clear();
-         Nodo root = this.miArbol.getRaiz();
+         NodoArbol root = this.miArbol.getRaiz();
          if (root != null) 
          {
-             calcularTama�oSubarbol(root);
+             calcularTamanoSubarbol(root);
              calcularPosicion(root, Integer.MAX_VALUE, Integer.MAX_VALUE, 0);
          }
     }
@@ -65,13 +68,13 @@ public class ArbolExpresionGrafico extends JPanel
      * referencia calcular el tama�o de cada subárbol.
      * @return Dimension con el tama�o de cada subárbol.
      */
-    private Dimension calcularTama�oSubarbol(Nodo n) 
+    private Dimension calcularTamanoSubarbol(NodoArbol n)
     {
           if (n == null) 
               return new Dimension(0,0);
  
-          Dimension ld = calcularTama�oSubarbol(n.getIzq());
-          Dimension rd = calcularTama�oSubarbol(n.getDer());
+          Dimension ld = calcularTamanoSubarbol(n.getIzq());
+          Dimension rd = calcularTamanoSubarbol(n.getDer());
           
           int h = fm.getHeight() + parent2child + Math.max(ld.height, rd.height);
           int w = ld.width + child2child + rd.width;
@@ -93,7 +96,7 @@ public class ArbolExpresionGrafico extends JPanel
      * @param right: int con alineación y orientación a la derecha.
      * @param top: int con el tope.
      */
-    private void calcularPosicion(Nodo n, int left, int right, int top) 
+    private void calcularPosicion(NodoArbol n, int left, int right, int top)
     {
       if (n == null) 
           return;
@@ -129,21 +132,33 @@ public class ArbolExpresionGrafico extends JPanel
      * @param puntoy: int con la posición en y desde donde se va a dibujar la línea hasta el siguiente hijo.
      * @param yoffs: int con la altura del FontMetrics.
      */
-    private void dibujarArbol(Graphics2D g, Nodo n, int puntox, int puntoy, int yoffs) 
+    private void dibujarArbol(Graphics2D g, NodoArbol n, int puntox, int puntoy, int yoffs)
     {
-     if (n == null) 
+     if (n == null)
          return;
-     
+
+     int d = 20;
+     int widht = 13;
+     int height = 16;
      Rectangle r = (Rectangle) posicionNodos.get(n);
-     g.draw(r);
-     g.drawString(n.getDato()+"", r.x + 3, r.y + yoffs);
-   
+
+        //g.draw(r);
+     g.setColor(new Color(9,11,48));
+     g.fillOval(r.x, r.y, d*(2), d);
+     g.setColor(Color.white);
+     g.drawString(n.getDato()+"", r.x+widht, r.y + yoffs);
+     n.setX(r.x);
+     n.setY(r.x);
      if (puntox != Integer.MAX_VALUE)
-       
+
      g.drawLine(puntox, puntoy, (int)(r.x + r.width/2), r.y);
-     
+
      dibujarArbol(g, n.getIzq(), (int)(r.x + r.width/2), r.y + r.height, yoffs);
      dibujarArbol(g, n.getDer(), (int)(r.x + r.width/2), r.y + r.height, yoffs);
+
+     for(int i=0;i<posicionNodos.size();i++){
+         System.out.println(posicionNodos.get(n));
+     }
      
    }
     

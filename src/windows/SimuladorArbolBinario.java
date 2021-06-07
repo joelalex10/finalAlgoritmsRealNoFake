@@ -1,21 +1,23 @@
 
-package ArbolGrafico;
+package windows;
 
+
+import grafoArboles.Arbol;
+
+import javax.swing.*;
 import java.util.ArrayList;
-import javax.swing.JPanel;
+import java.util.List;
 
-/**
- *
- * @author ploks
- */
 public class SimuladorArbolBinario {
 
     Arbol miArbol = new Arbol();
+    ArrayList<String> lista = new ArrayList<String>();
 
     public SimuladorArbolBinario() {
     }
 
     public boolean insertar(Integer dato) {
+        lista.add(dato+"");
         return (this.miArbol.agregar(dato));
     }
 
@@ -24,6 +26,7 @@ public class SimuladorArbolBinario {
         if (x == null) {
             return ("No existe el dato en el arbol");
         }
+        lista.remove(dato+"");
         return ("Borrado el dato: " + x.toString());
     }
 
@@ -34,10 +37,18 @@ public class SimuladorArbolBinario {
 
     public String inOrden() {
         ArrayList it = this.miArbol.inOrden();
+
+        System.out.println(it);
+
         return (recorrido(it, "Recorrido InOrden"));
     }
 
-    public String posOrden() {
+    public ArrayList<String>listaOriginal(){
+        System.out.println(lista);
+        return lista;
+    }
+
+    public String postOrden() {
         ArrayList it = this.miArbol.postOrden();
         return (recorrido(it, "Recorrido PosOrden"));
     }
@@ -122,6 +133,11 @@ public class SimuladorArbolBinario {
 
     public void podarArbol() {
         this.miArbol.podar();
+    }
+
+    public void eliminar() {
+        lista.clear();
+        this.miArbol.eliminar();
     }
 
     public JPanel getDibujo() {

@@ -1,5 +1,6 @@
 package windows;
 
+import grafos.Enlace;
 import grafos.Nodo;
 
 import javax.swing.*;
@@ -13,12 +14,14 @@ public class VentanaResultsAsignacion extends JFrame {
     int matrixCol;
     Vector<Nodo> vecNodo1;
     Vector<Nodo> vecNodo2;
+    Vector<Enlace> vecEnlace;
     int matrizCoeficientes[][];
     int matrizRestas[][];
     String matrizResultados[][];
     int sumaTotal;
 
-    public VentanaResultsAsignacion(int matrixRow, int matrixCol, Vector<Nodo> vecNodo1, Vector<Nodo> vecNodo2, int matrizCoeficientes[][],int  matrizRestas[][],String matrizResultados[][], int sumaTotal ) {
+    public VentanaResultsAsignacion(int matrixRow, int matrixCol, Vector<Nodo> vecNodo1, Vector<Nodo> vecNodo2, int matrizCoeficientes[][],int  matrizRestas[][],String matrizResultados[][], int sumaTotal,
+                                    Vector<Enlace> vecEnlace) {
         this.matrixRow = matrixRow;
         this.matrixCol = matrixCol;
         this.vecNodo1 = vecNodo1;
@@ -27,6 +30,7 @@ public class VentanaResultsAsignacion extends JFrame {
         this.matrizCoeficientes = matrizCoeficientes;
         this.matrizResultados= matrizResultados;
         this.sumaTotal = sumaTotal;
+        this.vecEnlace = vecEnlace;
         initialize();
     }
 
@@ -56,14 +60,23 @@ public class VentanaResultsAsignacion extends JFrame {
             posv =60;
         }
         matriz[0][0].setText("O/D");
-        matriz[0][0].setEnabled(false);
+        matriz[0][0].setEditable(false);
+        matriz[0][0].setForeground(Color.white);
+        matriz[0][0].setBackground(new Color(9,11,48));
+
+
+
         for(int i=0;i<vecNodo1.size();i++){
             matriz[i+1][0].setText(vecNodo1.get(i).getNombre());
-            matriz[i+1][0].setEnabled(false);
+            matriz[i+1][0].setEditable(false);
+            matriz[i+1][0].setForeground(Color.white);
+            matriz[i+1][0].setBackground(new Color(9,11,48));
         }
         for(int i=0;i<vecNodo2.size();i++){
             matriz[0][i+1].setText(vecNodo2.get(i).getNombre());
-            matriz[0][i+1].setEnabled(false);
+            matriz[0][i+1].setEditable(false);
+            matriz[0][i+1].setForeground(Color.white);
+            matriz[0][i+1].setBackground(new Color(9,11,48));
         }
         for(int i=0;i<matrixRow;i++){
             for(int j=0;j<matrixCol;j++){
@@ -90,18 +103,26 @@ public class VentanaResultsAsignacion extends JFrame {
         matriz1[0][0].setEnabled(false);
         for(int i=0;i<vecNodo1.size();i++){
             matriz1[i+1][0].setText(vecNodo1.get(i).getNombre());
-            matriz1[i+1][0].setEnabled(false);
+            matriz1[i+1][0].setEditable(false);
+            matriz1[i+1][0].setForeground(Color.white);
+            matriz1[i+1][0].setBackground(new Color(9,11,48));
         }
         for(int i=0;i<vecNodo2.size();i++){
             matriz1[0][i+1].setText(vecNodo2.get(i).getNombre());
-            matriz1[0][i+1].setEnabled(false);
+            matriz1[0][i+1].setEditable(false);
+            matriz1[0][i+1].setForeground(Color.white);
+            matriz1[0][i+1].setBackground(new Color(9,11,48));
         }
+
+        int cont =0;
+
         for(int i=0;i<matrixRow;i++){
             for(int j=0;j<matrixCol;j++){
                 matriz1[i+1][j+1].setText(matrizRestas[i][j]+"");
+
+                cont++;
             }
         }
-
 
         int posh2 = posh;
         int posv2 = posv*matrizCoeficientes.length*2+40;
@@ -122,15 +143,42 @@ public class VentanaResultsAsignacion extends JFrame {
         matriz2[0][0].setEnabled(false);
         for(int i=0;i<vecNodo1.size();i++){
             matriz2[i+1][0].setText(vecNodo1.get(i).getNombre());
-            matriz2[i+1][0].setEnabled(false);
+            matriz2[i+1][0].setEditable(false);
+            matriz2[i+1][0].setForeground(Color.white);
+            matriz2[i+1][0].setBackground(new Color(9,11,48));
         }
         for(int i=0;i<vecNodo2.size();i++){
             matriz2[0][i+1].setText(vecNodo2.get(i).getNombre());
-            matriz2[0][i+1].setEnabled(false);
+            matriz2[0][i+1].setEditable(false);
+            matriz2[0][i+1].setForeground(Color.white);
+            matriz2[0][i+1].setBackground(new Color(9,11,48));
+
         }
         for(int i=0;i<matrixRow;i++){
             for(int j=0;j<matrixCol;j++){
-                matriz2[i+1][j+1].setText(matrizResultados[i][j]+"");
+
+                if(matrizResultados[i][j].contains("(")){
+                    matriz2[i+1][j+1].setText(matrizResultados[i][j]+"");
+                }else{
+                    matriz2[i+1][j+1].setText(matrizResultados[i][j]+"");
+                    matriz2[i+1][j+1].setBackground(Color.green);
+                    matriz1[i+1][j+1].setBackground(Color.green);
+                    matriz[i+1][j+1].setBackground(Color.green);
+                }
+            }
+        }
+
+        for(Enlace enlace: vecEnlace){
+            for(int i=0;i<matrixRow;i++){
+                for(int j=0;j<matrixCol;j++){
+
+                    if(!matrizResultados[i][j].contains("(")){
+                        if(enlace.getNroActividadNodoInicio()==i && enlace.getNroActividadNodoFin()==j){
+                            enlace.setTextcolor(Color.green);
+                        }
+                    }
+
+                }
             }
         }
 

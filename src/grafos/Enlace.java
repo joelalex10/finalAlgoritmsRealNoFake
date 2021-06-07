@@ -60,7 +60,7 @@ public class Enlace {
 	public void pintar(Graphics g1) {
 		Graphics2D g2 = (Graphics2D) g1;
 		double angle = Math.atan2(this.y2 - this.y1, this.x2 - this.x1);
-		g2.setColor(Color.white);
+		g2.setColor(this.textcolor);
         g2.setStroke(new BasicStroke(this.thickness));
         
         //g2.drawArc(this.x1, this.y1, this.x2, this.y2, 0, 0);

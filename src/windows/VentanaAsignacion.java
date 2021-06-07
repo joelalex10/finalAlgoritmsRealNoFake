@@ -360,7 +360,9 @@ public class VentanaAsignacion {
 				cc.letra(cc.matrizAdyacente,cc.cambiar(cc.matrizResultados));
 				String[][] matResultados = cc.orden(cc.matrizAdyacente,cc.cambiar(cc.matrizResultados));
 
-				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen, lienzoAsignacion.vectorNodosDestino, mat, matResta,matResultados, cc.sumaTotal);
+				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen,
+						lienzoAsignacion.vectorNodosDestino, mat, matResta,matResultados, cc.sumaTotal, lienzoAsignacion.vectorEnlace);
+				lienzoAsignacion.repaint();
 				window.setLocationRelativeTo(null);
 				window.setVisible(true);
 
@@ -384,7 +386,9 @@ public class VentanaAsignacion {
 				int matResta[][] = cc.resta1;
 
 				String[][] matResultados = cc.orden(cc.matrizAdyacente,cc.cambiar(cc.matrizResultados));
-				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen, lienzoAsignacion.vectorNodosDestino, mat, matResta,matResultados,cc.sumaTotal);
+				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen,
+						lienzoAsignacion.vectorNodosDestino, mat, matResta,matResultados,cc.sumaTotal, lienzoAsignacion.vectorEnlace);
+				lienzoAsignacion.repaint();
 				window.setLocationRelativeTo(null);
 				window.setVisible(true);
 			}
@@ -410,7 +414,9 @@ public class VentanaAsignacion {
 				int matResta[][] = cc.resta1;
 
 				String[][] matResultados = cc.orden(cc.matrizAdyacente,cc.cambiar(cc.matrizResultados));
-				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen, lienzoAsignacion.vectorNodosDestino, mat, matResta,matResultados,cc.sumaTotal);
+				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen,
+						lienzoAsignacion.vectorNodosDestino, mat, matResta,matResultados,cc.sumaTotal, lienzoAsignacion.vectorEnlace);
+				lienzoAsignacion.repaint();
 				window.setLocationRelativeTo(null);
 				window.setVisible(true);
 
@@ -423,7 +429,9 @@ public class VentanaAsignacion {
 				int matResta[][] = cc.resta1;
 
 				String[][] matResultados = cc.orden(cc.matrizAdyacente,cc.cambiar(cc.matrizResultados));
-				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen, lienzoAsignacion.vectorNodosDestino, mat, matResta,matResultados,cc.sumaTotal);
+				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen,
+						lienzoAsignacion.vectorNodosDestino, mat, matResta,matResultados,cc.sumaTotal, lienzoAsignacion.vectorEnlace);
+				lienzoAsignacion.repaint();
 				window.setLocationRelativeTo(null);
 				window.setVisible(true);
 				//optimo = cc.getMatrizOptimo();
