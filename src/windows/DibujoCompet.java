@@ -145,7 +145,7 @@ public class DibujoCompet extends JPanel implements MouseListener, MouseMotionLi
 			g.setColor(Color.BLUE);
 			int antx=lista.get(i).getX();
 			int anty= lista.get(i).getY();
-			g.setColor(Color.WHITE);
+			g.setColor(new Color(255,255,255));
 			g.drawString(lista.get(i).getName(),  antx,  anty);
 			}
 			
@@ -209,7 +209,7 @@ public class DibujoCompet extends JPanel implements MouseListener, MouseMotionLi
 						String name ="0";
 						if(!mismo)
 						{
-							getListae().add(new EnlaceCompet (ni,nf,name,Color.gray,doble,mismo));
+							getListae().add(new EnlaceCompet (ni,nf,name,Color.white,doble,mismo));
 						
 						}
 							

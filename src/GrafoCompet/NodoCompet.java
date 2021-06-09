@@ -14,6 +14,25 @@ public class NodoCompet extends JPanel{
 	private String name;
 	private Color c;
 	private int iz;
+	private double auxX;
+	private double auxY;
+
+	public double getAuxX() {
+		return auxX;
+	}
+
+	public void setAuxX(double auxX) {
+		this.auxX = auxX;
+	}
+
+	public double getAuxY() {
+		return auxY;
+	}
+
+	public void setAuxY(double auxY) {
+		this.auxY = auxY;
+	}
+
 	public double getXx() {
 		return xx;
 	}
@@ -83,7 +102,7 @@ public class NodoCompet extends JPanel{
 		this.name = n;
 		this.c = c;
 	}
-	public NodoCompet(int x, int y,double xx, double yy, int b, int a, String n, Color c) {
+	public NodoCompet(int x, int y,double xx, double yy, int b, int a, String n, Color c ) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -185,9 +204,25 @@ public class NodoCompet extends JPanel{
 	}
 	public void dibujarNd (Graphics g) {
 		super.paintComponent(g);
-		g.setColor(new Color(9,11,48));
+		g.setColor(this.c);
 		g.fillOval(getX()-getB()/2, getY()-getA()/2, getB(), getA());
 		
 	}
-	
+
+	@Override
+	public String toString() {
+		return "NodoCompet{" +
+				"con=" + con +
+				", x=" + x +
+				", y=" + y +
+				", a=" + a +
+				", b=" + b +
+				", xx=" + xx +
+				", yy=" + yy +
+				", name='" + name + '\'' +
+				", c=" + c +
+				", iz=" + iz +
+				", der=" + der +
+				'}';
+	}
 }

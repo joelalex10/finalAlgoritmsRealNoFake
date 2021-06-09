@@ -1,18 +1,14 @@
 package windows;
 
-import Database.Arbol.ArbolDao;
-import Database.Arbol.ArbolModel;
-import Database.Asignacion.AsignacionEnlaceDao;
-import Database.Asignacion.AsignacionGrafDao;
-import Database.Asignacion.AsignacionNodoDao;
-import Database.Compet.CompetDao;
-import Database.Compet.CompetModel;
+import Database.Compet.Dao.CompetEnlaceDao;
+import Database.Compet.Dao.CompetGrafoDao;
+import Database.Compet.Dao.CompetNodoDao;
+import Database.Compet.Model.CompetEnlaceModel;
+import Database.Compet.Model.CompetGrafoModel;
+import Database.Compet.Model.CompetNodoModel;
 import GrafoCompet.EnlaceCompet;
 import GrafoCompet.NodoCompet;
 import GrafoCompet.PosicionCompet;
-import grafos.Enlace;
-import grafos.Grafo;
-import grafos.Nodo;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -143,6 +139,64 @@ public class VentanaCompet extends JFrame {
         JButton btnNewButton_1_3_1 = new JButton("GUARDAR GRAFO");
         btnNewButton_1_3_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
+                String nombre = JOptionPane.showInputDialog("Ingrese un nombre al archivo");
+                CompetGrafoModel grafoModel = new CompetGrafoModel(nombre);
+                int idGrafo = CompetGrafoDao.insertEnlace(grafoModel);
+
+                for(NodoCompet nodoCompet: paneld.getLista()){
+
+                    CompetNodoModel nodoModel = new CompetNodoModel(idGrafo,nodoCompet.getX(), nodoCompet.getY(),
+                            nodoCompet.getA(), nodoCompet.getB(), nodoCompet.getXx(), nodoCompet.getYy(),
+                            nodoCompet.getName(), nodoCompet.getC().getRed(), nodoCompet.getC().getGreen(),
+                            nodoCompet.getC().getBlue());
+                    CompetNodoDao.insertNodo(nodoModel);
+                }
+
+                List<CompetNodoModel> listaNodosCompet = CompetNodoDao.getListNodoModelByIdGrafo(idGrafo);
+                List<NodoCompet> lista = new ArrayList<>();
+                for(CompetNodoModel nodoCompetModel : listaNodosCompet){
+                    lista.add(new NodoCompet(nodoCompetModel.getX(), nodoCompetModel.getY(),
+                            nodoCompetModel.getXx(), nodoCompetModel.getYy(),
+                            nodoCompetModel.getB(), nodoCompetModel.getA(),
+                            nodoCompetModel.getNombre(), new Color(nodoCompetModel.getRed(),
+                            nodoCompetModel.getGreen(), nodoCompetModel.getBlue())));
+                }
+
+                for(EnlaceCompet enlaceCompet: paneld.getListae()){
+                    System.out.println(enlaceCompet);
+                }
+
+                for(EnlaceCompet enlaceCompet: paneld.getListae()){
+                    int idNodoInicio = 0;
+                    int idNodoFin = 0;
+                    for(CompetNodoModel nodoCompetModel : listaNodosCompet){
+                        NodoCompet nodoCompet = new NodoCompet(nodoCompetModel.getX(), nodoCompetModel.getY(),
+                                nodoCompetModel.getXx(), nodoCompetModel.getYy(),
+                                nodoCompetModel.getB(), nodoCompetModel.getA(),
+                                nodoCompetModel.getNombre(), new Color(nodoCompetModel.getRed(),
+                                nodoCompetModel.getGreen(), nodoCompetModel.getBlue()));
+                        if(enlaceCompet.getNi().getName().equals(nodoCompet.getName())){
+                            idNodoInicio = nodoCompetModel.getId();
+                            System.out.println("EL ID INICIO ES: "+idNodoInicio);
+                        }
+                    }
+
+                    for(CompetNodoModel nodoCompetModel : listaNodosCompet){
+                        NodoCompet nodoCompet = new NodoCompet(nodoCompetModel.getX(), nodoCompetModel.getY(),
+                                nodoCompetModel.getXx(), nodoCompetModel.getYy(),
+                                nodoCompetModel.getB(), nodoCompetModel.getA(),
+                                nodoCompetModel.getNombre(), new Color(nodoCompetModel.getRed(),
+                                nodoCompetModel.getGreen(), nodoCompetModel.getBlue()));
+                        if(enlaceCompet.getNf().getName().equals(nodoCompet.getName())){
+                            idNodoFin = nodoCompetModel.getId();
+                        }
+                    }
+                    CompetEnlaceModel enlaceModel = new CompetEnlaceModel(enlaceCompet.getC().getRed(),
+                            enlaceCompet.getC().getGreen(), enlaceCompet.getC().getBlue(),idNodoInicio,
+                            idNodoFin, idGrafo);
+                    CompetEnlaceDao.insertEnlace(enlaceModel);
+                }
+                /****
 
                 imprimirListae();
 
@@ -164,7 +218,7 @@ public class VentanaCompet extends JFrame {
 
                 CompetDao.insertCompet(compet);
 
-
+                 ***/
 
             }
         });
@@ -179,6 +233,12 @@ public class VentanaCompet extends JFrame {
 
         btnNewButton_1_3_2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
+
+                
+
+
+
+                /******************
 
                 List<CompetModel> lista = CompetDao.getListCompet();
                 String[]listaCombo= new String[lista.size()];
@@ -251,7 +311,7 @@ public class VentanaCompet extends JFrame {
                     }
                 });
                 comboBox.setBounds(88, 62, 177, 20);
-                JOptionPane.showMessageDialog(null, comboBox, "SELECCIONE UN ARCHIVO", 1);
+                JOptionPane.showMessageDialog(null, comboBox, "SELECCIONE UN ARCHIVO", 1);******/
             }
         });
         btnNewButton_1_3_2.setForeground(Color.WHITE);
@@ -281,6 +341,8 @@ public class VentanaCompet extends JFrame {
             public void actionPerformed(ActionEvent arg0) {
                 double x=Double.parseDouble(JOptionPane.showInputDialog("Ingrese x"));
                 double y=Double.parseDouble(JOptionPane.showInputDialog("Ingrese y"));
+
+
                 String nombre =JOptionPane.showInputDialog( "Ingrese nombre");
                 int a=60;
                 int aux=(int)Math.round(x);
@@ -301,7 +363,7 @@ public class VentanaCompet extends JFrame {
                 aux=(int)Math.round(aux*mul);
                 auy=(int)Math.round(auy*mul);
                 paneld.setMul(mul);
-                paneld.getLista().add(new NodoCompet(aux,auy,x,y,a,a,nombre,new Color(0, 102, 102)));
+                paneld.getLista().add(new NodoCompet(aux,auy,x,y,a,a,nombre,new Color(9,11,48)));
                 vectorNodos.add(new NodoCompet(aux,auy,x,y,a,a,nombre,new Color(0, 102, 102)));
                 agregarColumna();
                 repaint();

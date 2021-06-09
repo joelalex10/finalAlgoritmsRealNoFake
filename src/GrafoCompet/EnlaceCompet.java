@@ -175,7 +175,7 @@ public class EnlaceCompet extends JPanel{
 	        }
 	      }  
 		g.fillOval((int) xxd-20, (int) yyd-10, 25, 25);
-		g.setColor(Color.BLACK);
+		g.setColor(Color.GREEN);
 		g.drawString(getName(), (int) xxd-10, (int) yyd+10);
 		
 	}
@@ -223,5 +223,20 @@ public class EnlaceCompet extends JPanel{
 		g.drawString(getName(), getNi().getX()+28, getNi().getY()+28);
 		
 	}
-	
+
+	@Override
+	public String toString() {
+		return "EnlaceCompet{" +
+				"x1=" + x1 +
+				", y1=" + y1 +
+				", x2=" + x2 +
+				", y2=" + y2 +
+				", name='" + name + '\'' +
+				", c=" + c +
+				", ni=" + ni +
+				", nf=" + nf +
+				", dup=" + dup +
+				", mismo=" + mismo +
+				'}';
+	}
 }
