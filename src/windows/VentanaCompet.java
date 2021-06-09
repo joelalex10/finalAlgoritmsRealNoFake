@@ -144,6 +144,8 @@ public class VentanaCompet extends JFrame {
         btnNewButton_1_3_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
 
+                imprimirListae();
+
                 String name = JOptionPane.showInputDialog("Ingrese un nombre al archivo");
                 String cad = "";
                 for(int i=0;i<vectorNodos.size();i++){
