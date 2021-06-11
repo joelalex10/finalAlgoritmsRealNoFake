@@ -96,7 +96,7 @@ public class Asignacion{
 
     /* --------------------- PRUEBA DEL ALGORITMO --------------------- */
     public static void main(String[] args){
-        Asignacion a=new Asignacion(4);
+        Asignacion a=new Asignacion(3);
         System.out.println(Arrays.toString(a.asignaTareas()));
     }
 
