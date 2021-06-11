@@ -45,7 +45,7 @@ public class AlgoritmoAsignacion {
 	public void setMatrizOptimo(int[][] matrizOptimo) {this.matrizOptimo = matrizOptimo;}
 
 	public void efectuarAlgoritmo() {	
-		mostrar(matrizAdyacente);
+		//mostrar(matrizAdyacente);
 		gama = getMinOMax(matrizAdyacente);
 		System.out.println("GAMA");
 		for(int i=0;i<gama.length;i++){
@@ -71,7 +71,7 @@ public class AlgoritmoAsignacion {
 			}
 		}
 		resta1 = restarMatriz(resta2, alfa);
-		mostrar(resta1);
+		//mostrar(resta1);
 		int [][] resultado = new int[resta1.length][resta1.length];
 		for (int x=0; x < resultado.length; x++) {
 			for (int y=0; y < resta1[x].length; y++) {
@@ -83,7 +83,8 @@ public class AlgoritmoAsignacion {
 		int[][] hola=multiplicarMatrices(matrizAdyacente,cambiar(matrizasd));
 		matrizResultados = matrizasd;
 		if (a.isLol()){
-			mostrarString(orden(matrizAdyacente,cambiar(matrizasd)));
+			orden(matrizAdyacente,cambiar(matrizasd));
+			//mostrarString(orden(matrizAdyacente,cambiar(matrizasd)));
 			letra(matrizAdyacente,cambiar(matrizasd));
 			//JOptionPane.showMessageDialog (null, letra(matrizAdyacente,cambiar(matrizasd)));
 			SumaAsignado(matrizAdyacente,cambiar(matrizasd));

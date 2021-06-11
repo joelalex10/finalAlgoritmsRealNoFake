@@ -119,9 +119,16 @@ public class VentanaCompet extends JFrame {
             public void actionPerformed(ActionEvent arg0) {
                 if(verificarPoligono())
                 {
-                    crearListaE();
-                    paneld.setPuntoMedio(puntoMedio.get(0));
-                    paneld.setSw(true);
+                    try{
+                        crearListaE();
+                        System.out.println("EL PUNTO MEDIO ES: "+puntoMedio.get(0));
+
+                        paneld.setPuntoMedio(puntoMedio.get(0));
+                        paneld.setSw(true);
+                    }catch (Exception e){
+                        JOptionPane.showMessageDialog(null,"NO SE HAN AGREGADO NODOS");
+                    }
+
 
                 }
                 else
@@ -219,7 +226,7 @@ public class VentanaCompet extends JFrame {
                 CompetDao.insertCompet(compet);
 
                  ***/
-
+                JOptionPane.showMessageDialog(null,"DATO AGREGADOS");
             }
         });
         btnNewButton_1_3_1.setForeground(Color.WHITE);
@@ -234,7 +241,103 @@ public class VentanaCompet extends JFrame {
         btnNewButton_1_3_2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
 
-                
+
+
+                List<CompetGrafoModel>lista = CompetGrafoDao.listGrafoCompet();
+                String[]listaCombo= new String[lista.size()];
+                for(int i=0;i<lista.size();i++) {
+                    listaCombo[i] = lista.get(i).getNombre();
+                }
+
+                JComboBox comboBox = new JComboBox(listaCombo);
+                comboBox.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        int ob=comboBox.getSelectedIndex();
+
+                        for(int i=0;i<lista.size();i++) {
+                            if(ob==i) {
+                                index = lista.get(i).getId();
+                            }
+                        }
+                    }
+                });
+                comboBox.setBounds(88, 62, 177, 20);
+                JOptionPane.showMessageDialog(null, comboBox, "SELECCIONE UN ARCHIVO", 1);
+
+
+
+                paneld.getLista().clear();
+                vectorNodos.clear();
+                paneld.getListae().clear();
+                listae.clear();
+                listaEnlace.clear();
+                paneld.sw=false;
+                repaint();
+                List<CompetNodoModel>listaNodosModel = CompetNodoDao.getListNodoModelByIdGrafo(index);
+                for(CompetNodoModel nodoModel: listaNodosModel){
+                    paneld.getLista().add(new NodoCompet(nodoModel.getX(), nodoModel.getY(), nodoModel.getXx(),
+                            nodoModel.getYy(), nodoModel.getB(), nodoModel.getA(),  nodoModel.getNombre(),
+                            new Color(nodoModel.getRed(), nodoModel.getGreen(), nodoModel.getBlue())));
+
+                    int a=60;
+                    int aux=(int)Math.round(nodoModel.getXx());
+                    int auy=(int)Math.round(nodoModel.getYy());
+                    if(aux<10 && vectorNodos.size()<1)
+                    {
+                        mul=70;
+
+                    }else if(aux<100 && vectorNodos.size()<1 )
+                    {
+                        mul=6;
+                    }
+                    if(aux>1000 && vectorNodos.size()<1)
+                    {
+                        mul=0.1;
+
+                    }
+                    aux=(int)Math.round(aux*mul);
+                    auy=(int)Math.round(auy*mul);
+                    paneld.setMul(mul);
+                    vectorNodos.add(new NodoCompet(aux, auy, nodoModel.getXx(),
+                            nodoModel.getYy(), nodoModel.getB(), nodoModel.getA(),  nodoModel.getNombre(),
+                            new Color(nodoModel.getRed(), nodoModel.getGreen(), nodoModel.getBlue())));
+                }
+                List<CompetEnlaceModel>listaEnlaceModel = CompetEnlaceDao.getListEnlaceModelByIdGrafo(index);
+                List<CompetNodoModel>listaNodoModel = CompetNodoDao.getListNodoModelByIdGrafo(index);
+
+                for(CompetEnlaceModel enlaceModel: listaEnlaceModel){
+
+                    int idNodoInicio = enlaceModel.getIdNodo1();
+                    int idNodoFin = enlaceModel.getIdNodo2();
+                    NodoCompet nodo1 = null;
+                    NodoCompet nodo2 = null;
+
+
+                    for(CompetNodoModel nodoModel: listaNodoModel){
+                        if(idNodoInicio == nodoModel.getId()){
+                            nodo1 = new NodoCompet(nodoModel.getX(), nodoModel.getY(), nodoModel.getXx(),
+                                    nodoModel.getYy(), nodoModel.getB(), nodoModel.getA(), nodoModel.getNombre(),
+                                    new Color(nodoModel.getRed(), nodoModel.getGreen(), nodoModel.getBlue()));
+                        }
+                    }
+
+                    for(CompetNodoModel nodoModel: listaNodoModel){
+                        if(idNodoFin == nodoModel.getId()){
+                            nodo2 = new NodoCompet(nodoModel.getX(), nodoModel.getY(), nodoModel.getXx(),
+                                    nodoModel.getYy(), nodoModel.getB(), nodoModel.getA(), nodoModel.getNombre(),
+                                    new Color(nodoModel.getRed(), nodoModel.getGreen(), nodoModel.getBlue()));
+                        }
+                    }
+                    EnlaceCompet enlaceCompet = new EnlaceCompet(nodo1,nodo2,"0",new Color(enlaceModel.getRed(),
+                            enlaceModel.getGreen(), enlaceModel.getBlue()));
+                    paneld.getListae().add(enlaceCompet);
+                    listae.add(enlaceCompet);
+                    listaEnlace.add(enlaceCompet);
+
+
+                }
+                repaint();
+
 
 
 
@@ -339,34 +442,43 @@ public class VentanaCompet extends JFrame {
         JButton btnAsignacion = new JButton("AGREGAR DATO");
         btnAsignacion.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                double x=Double.parseDouble(JOptionPane.showInputDialog("Ingrese x"));
-                double y=Double.parseDouble(JOptionPane.showInputDialog("Ingrese y"));
+
+                try{
+                    double x=Double.parseDouble(JOptionPane.showInputDialog("Ingrese x"));
+                    double y=Double.parseDouble(JOptionPane.showInputDialog("Ingrese y"));
 
 
-                String nombre =JOptionPane.showInputDialog( "Ingrese nombre");
-                int a=60;
-                int aux=(int)Math.round(x);
-                int auy=(int)Math.round(y);
-                if(aux<10 && vectorNodos.size()<1)
-                {
-                    mul=70;
+                    String nombre =JOptionPane.showInputDialog( "Ingrese nombre");
+                    int a=60;
+                    int aux=(int)Math.round(x);
+                    int auy=(int)Math.round(y);
+                    if(aux<10 && vectorNodos.size()<1)
+                    {
+                        mul=70;
 
-                }else if(aux<100 && vectorNodos.size()<1 )
-                {
-                    mul=6;
+                    }else if(aux<100 && vectorNodos.size()<1 )
+                    {
+                        mul=6;
+                    }
+                    if(aux>1000 && vectorNodos.size()<1)
+                    {
+                        mul=0.1;
+
+                    }
+                    aux=(int)Math.round(aux*mul);
+                    auy=(int)Math.round(auy*mul);
+                    paneld.setMul(mul);
+                    paneld.getLista().add(new NodoCompet(aux,auy,x,y,a,a,nombre,new Color(9,11,48)));
+                    vectorNodos.add(new NodoCompet(aux,auy,x,y,a,a,nombre,new Color(0, 102, 102)));
+                    agregarColumna();
+                    repaint();
+
+                }catch(NullPointerException e){
+                    JOptionPane.showMessageDialog(null,"EL CUADRO DE TEXTO NO PUEDE ESTAR VACIO");
+                }catch (NumberFormatException e){
+                    JOptionPane.showMessageDialog(null,"DEBE INGRESAR UN VALOR NUMERICO");
                 }
-                if(aux>1000 && vectorNodos.size()<1)
-                {
-                    mul=0.1;
 
-                }
-                aux=(int)Math.round(aux*mul);
-                auy=(int)Math.round(auy*mul);
-                paneld.setMul(mul);
-                paneld.getLista().add(new NodoCompet(aux,auy,x,y,a,a,nombre,new Color(9,11,48)));
-                vectorNodos.add(new NodoCompet(aux,auy,x,y,a,a,nombre,new Color(0, 102, 102)));
-                agregarColumna();
-                repaint();
             }
         });
         btnAsignacion.setForeground(Color.WHITE);
@@ -376,7 +488,53 @@ public class VentanaCompet extends JFrame {
         panel_1.add(btnAsignacion);
 
 
+        JButton btnLimpiar = new JButton("LIMPIAR");
+        btnLimpiar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
 
+                int option = JOptionPane.showConfirmDialog(null, "SE ELIMINARAN LOS DATOS \nESTA SEGURO DE LIMPIAR EL LIENZO");
+                //System.out.println(lienzo.vertices);
+                if(option ==0) {
+                    paneld.getLista().clear();
+                    vectorNodos.clear();
+                    paneld.getListae().clear();
+                    listae.clear();
+                    listaEnlace.clear();
+                    paneld.sw=false;
+                    repaint();
+                    JOptionPane.showMessageDialog(null, "EL GRAFO HA SIDO ELIMINADO");
+                    //System.out.println(lienzo.vertices);
+                }
+
+            }
+        });
+
+        btnLimpiar.setForeground(Color.WHITE);
+        btnLimpiar.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 13));
+        btnLimpiar.setBackground(new Color(21, 88, 16));
+        btnLimpiar.setBounds(25, 52, 160, 30);
+        panel_1.add(btnLimpiar);
+
+        JButton btnTable = new JButton("VER DATOS");
+        btnTable.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                activarVentanaDatos();
+
+            }
+        });
+        btnTable.setForeground(Color.WHITE);
+        btnTable.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 13));
+        btnTable.setBackground(new Color(21, 88, 16));
+        btnTable.setBounds(184, 52, 160, 30);
+        panel_1.add(btnTable);
+
+
+
+    }
+    public void activarVentanaDatos(){
+        VentanaDataCompet window=new VentanaDataCompet(this);
+        window.setLocationRelativeTo(null);
+        window.setVisible(true);
     }
 
     void imprimirListae()
@@ -434,9 +592,15 @@ public class VentanaCompet extends JFrame {
         JOptionPane.showMessageDialog(null,"X= "+listaEnlace.get(0).getNi().getXx()+"\n"+"Y= "+listaEnlace.get(0).getNi().getYy());
         System.out.println(""+listaEnlace.get(0).getNi().getXx());
         System.out.println(""+listaEnlace.get(0).getNi().getYy());
+        System.out.println("LISTA PUNTO MEDIO");
+        for(NodoCompet nodoCompet: puntoMedio){
+            System.out.println(nodoCompet);
+        }
 
 
     }
+
+
     private void generarNL() {
         listaEnlace.clear();
         for(int i=0;i<puntoMedio.size();i++)
@@ -500,11 +664,22 @@ public class VentanaCompet extends JFrame {
 
     public boolean verificarPoligono()
     {
+
+        System.out.println("LISTA DE VECTORES");
+        for(EnlaceCompet enlaceCompet: listae){
+            System.out.println(enlaceCompet);
+        }
+
+        for(NodoCompet nodoCompet: vectorNodos){
+            System.out.println(nodoCompet);
+        }
+
+
         boolean flag=true;
 
         int con=0;
         for(int i=0;i<vectorNodos.size();i++)
-        {;
+        {
             if(listae.get(i).getNi().equals(listae.get(i).getNf()))
             {
                 flag=false;

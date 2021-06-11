@@ -36,8 +36,7 @@ public class VentanaResultsAsignacion extends JFrame {
 
     public void initialize(){
         setTitle("MATRIZ ASGINACION");
-        setBounds(100, 100, 890, 647);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 590, 647);
         getContentPane().setLayout(null);
 
         /***JLabel jLabel = new JLabel();
@@ -100,7 +99,10 @@ public class VentanaResultsAsignacion extends JFrame {
             posv =60;
         }
         matriz1[0][0].setText("O/D");
-        matriz1[0][0].setEnabled(false);
+        matriz1[0][0].setEditable(false);
+        matriz1[0][0].setForeground(Color.white);
+        matriz1[0][0].setBackground(new Color(9,11,48));
+
         for(int i=0;i<vecNodo1.size();i++){
             matriz1[i+1][0].setText(vecNodo1.get(i).getNombre());
             matriz1[i+1][0].setEditable(false);
@@ -140,7 +142,9 @@ public class VentanaResultsAsignacion extends JFrame {
             posv =60;
         }
         matriz2[0][0].setText("O/D");
-        matriz2[0][0].setEnabled(false);
+        matriz2[0][0].setEditable(false);
+        matriz2[0][0].setForeground(Color.white);
+        matriz2[0][0].setBackground(new Color(9,11,48));
         for(int i=0;i<vecNodo1.size();i++){
             matriz2[i+1][0].setText(vecNodo1.get(i).getNombre());
             matriz2[i+1][0].setEditable(false);

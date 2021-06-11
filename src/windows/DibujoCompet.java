@@ -153,8 +153,14 @@ public class DibujoCompet extends JPanel implements MouseListener, MouseMotionLi
 		if(sw)
 		{
 			g.setColor(Color.red);
+			System.out.println("LA VARIABLE MUL ES: "+mul);
 			int aux=(int)Math.round(puntoMedio.getXx()*mul);
 			int auy=(int)Math.round(puntoMedio.getYy()*mul);
+
+			System.out.println("auxX es: "+aux);
+			System.out.println("auyY es: "+auy);
+
+
 			g.fillOval(aux-8, auy-8, 16, 16);
 		}
 		if(flagPro)

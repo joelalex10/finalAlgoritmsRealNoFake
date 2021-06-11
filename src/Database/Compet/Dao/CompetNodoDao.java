@@ -75,6 +75,5 @@ public class CompetNodoDao {
             ex.printStackTrace();
         }
         return lista;
-
     }
 }

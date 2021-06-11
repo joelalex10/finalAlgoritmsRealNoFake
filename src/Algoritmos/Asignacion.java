@@ -1,167 +1,103 @@
-package Algoritmos;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
 
-import grafos.Enlace;
-import grafos.Nodo;
-import windows.Sudoku;
+public class Asignacion{
 
-import javax.swing.*;
-import java.util.Vector;
+    private int[][] matrizCostes;
 
-public class Asignacion {
+    /* ----------------- IMPLEMENTACIÓN DEL ALGORITMO ----------------- */
+    public Asignacion(int n){ // n será el tamaño del problema
 
-    int[][]matrizAdyacente;
-    int[][]matrizRestada;
-    boolean opcion;
-    int[]arrMayores;
-    int[][]matMayores;
+        Scanner sc = new Scanner(System.in);  //Se crea un objeto Scanner
 
-    public Asignacion(int[][] matrizAdyacente, boolean opcion) {
-        super();
-        this.matrizAdyacente = matrizAdyacente;
-        this.opcion = opcion;
-        System.out.println("DATOS");
-        for(int i=0;i<matrizAdyacente.length;i++){
+        matrizCostes=new int[n][n];
+        for (int i=0; i<n; i++){// Generamos un problema aleatorio. Si quieres introducir tus datos elimina esto
+            for (int j=0; j<n; j++){
+                //matrizCostes[i][j]=(int) (Math.random()*10+1);
+                System.out.print("Introduzca un numero en la posicion: ");
+                matrizCostes[i][j] = Integer.parseInt(sc.nextLine());
+            }
+        }
+
+
+
+        for (int i=0; i<n; i++){
             System.out.println("");
-            for(int j=0;j<matrizAdyacente.length;j++){
-                System.out.print(matrizAdyacente[i][j]+"\t");
+            for (int j=0; j<n; j++){
+                System.out.print(matrizCostes[i][j]+"\t");
             }
         }
 
+
+
     }
-    public int []obtenerMayores(){
-        int arrMax [] = new int[matrizAdyacente.length];
-        int valorMaxF = 0;
-        for(int i=0;i<matrizAdyacente.length;i++){
-            valorMaxF = matrizAdyacente[0][i];
-            for(int j=0;j<matrizAdyacente.length;j++){
-                if(valorMaxF<matrizAdyacente[j][i]) {
-                    valorMaxF=matrizAdyacente[j][i];
-                }
+
+    public int[] asignaTareas(){
+        int[] nodoSolucion=generaSolucion(); // Generamos una solución por defecto
+        int[] solucion=new int[matrizCostes.length]; // Solución que vdevolvemos
+        int cota=calculaCotaAsociada(nodoSolucion);
+        ArrayList<Integer> agentesDisponibles=inicializaArrayList(); // Tenemos el conjunto de agentes en una estructura de datos
+        int j=0; // Contador para guiarnos sobre el nodoSolucion y nuestra solucion
+        while (!agentesDisponibles.isEmpty()){ // Mientras que la pila no esté vacía
+            int[] vectorCotas=new int[agentesDisponibles.size()]; // Nos declaramos un array de cotas
+            for (int i=0; i<vectorCotas.length; i++){ // Rellenamos el array de cotas
+                nodoSolucion[j]=matrizCostes[agentesDisponibles.get(i)][j];
+                vectorCotas[i]=calculaCotaAsociada(nodoSolucion);
             }
-            arrMax[i] = valorMaxF;
-            //System.out.println("El valor max de la fila es " + valorMaxF);
+            int posicion=getPosicionMejorAgente(vectorCotas); // Nos quedamos con el mejor valor (el que hace que la cota sea menor)
+            nodoSolucion[j]=matrizCostes[agentesDisponibles.get(posicion)][j];
+            solucion[j]=agentesDisponibles.get(posicion); // Lo incluimos en nuestra solución
+            agentesDisponibles.remove(posicion); // Lo eliminamos de la pila
+            j++;
         }
-        return arrMax;
+        return solucion;
     }
 
-    public void efectuarAlgoritmo() {
-        mostrar(matrizAdyacente);
-        System.out.println("");
-        arrMayores = obtenerMayores();
-        matrizRestada = getMatrizRestada(arrMayores);
-        System.out.println("");
-        matMayores = getMatMayores(matrizRestada);
-
-        /********
-        int [][]resta2 = matrizRestada();
-        alfa = getMinOMax2(resta2);
-        resta1 = restarMatriz(resta2, alfa);
-        mostrar(resta1);
-        int [][] resultado = new int[resta1.length][resta1.length];
-        for (int x=0; x < resultado.length; x++) {
-            for (int y=0; y < resta1[x].length; y++) {
-                resultado[x][y] = 100*resta1 [x][y];
-            }
+    // Construimos un nodo solución para poder comprar los valores con él
+    private int[] generaSolucion(){
+        int[] solucion=new int[matrizCostes.length];
+        int j=0;
+        for (int i=0; i<solucion.length; i++){
+            solucion[i]=matrizCostes[i][j];
+            j++;
         }
-        Sudoku a=new Sudoku(resultado);
-        int[][] matrizasd = a.solve();
-        int[][] hola=multiplicarMatrices(matrizAdyacente,cambiar(matrizasd));
-        if (a.isLol()){
-            mostrarString(orden(matrizAdyacente,cambiar(matrizasd)));
-            JOptionPane.showMessageDialog (null, letra(matrizAdyacente,cambiar(matrizasd)));
-            SumaAsignado(matrizAdyacente,cambiar(matrizasd));
-        }*/
+        return solucion;
     }
 
-    public void mostrar(int matrizAdy[][]) {
-        int c =matrizAdy.length;
-        String[] m= new String[c];
-        for(int i = 0;i < c; i++) {
-            String v ="";
-            for(int j = 0; j < matrizAdy[0].length; j++) {
-                v+= matrizAdy[i][j]+"   ";
-            }
-            m[i]=v;
-        }
-        JOptionPane.showMessageDialog (null, m);
+    // Generamos la pila con la información sobre los agentes
+    private ArrayList<Integer> inicializaArrayList(){
+        ArrayList<Integer> solucion=new ArrayList<Integer>();
+        for (int i=0; i<matrizCostes.length; i++)
+            solucion.add(i);
+        return solucion;
     }
 
-    public int[][] getMatrizRestada(int arrMax[]){
-        int [][] matSust = matrizAdyacente;
+    // Calculamos la cota asociada a un nodo
+    private int calculaCotaAsociada(int[] nodo){
+        int sol=0;
+        for (int i=0; i<nodo.length; i++)
+            sol+=nodo[i];
+        return sol;
+    }
 
-        for(int i=0;i<matrizAdyacente.length;i++){
-            for(int j=0;j<matrizAdyacente.length;j++){
-                matSust[i][j] = matSust[i][j] -arrMax[j];
+    // Extraemos al mejor agente
+    private int getPosicionMejorAgente(int[] vectorCotas){
+        int posicion=0;
+        int valor=vectorCotas[0];
+        for (int i=1; i<vectorCotas.length; i++){
+            if (valor>vectorCotas[i]){
+                valor=vectorCotas[i];
+                posicion=i;
             }
         }
-        System.out.println("");
-        for(int i=0;i<matrizAdyacente.length;i++){
-            System.out.println("");
-            for(int j=0;j<matrizAdyacente.length;j++){
-                System.out.print(matSust[i][j]+"\t");
-            }
-        }
-        return matSust;
+        return posicion;
     }
 
-    private int[][] getMatMayores(int[][] m){
-        int [][] matrizC = new int[m.length][m[0].length];
-        for(int i = 0; i < matrizC.length; i++) {
-            if(opcion) {
-                int maximo = getMaximo(m, i, true);
-                for(int j = 0 ;j < matrizC[0].length; j++) {
-                    matrizC[i][j] = maximo;
-                }
-            } else {
-                int minimo = getMinimo(m, i, true);
-                for(int j = 0 ;j < matrizC[0].length; j++) {
-                    matrizC[i][j] = minimo;
-                }
-            }
-        }
-
-        System.out.println("alfa");
-        for(int i=0;i<matrizC.length;i++){
-            System.out.println("");
-            for(int j=0;j<matrizC.length;j++){
-                System.out.print(matrizC[i][j]+"\t");
-            }
-        }
-
-        return matrizC;
+    /* --------------------- PRUEBA DEL ALGORITMO --------------------- */
+    public static void main(String[] args){
+        Asignacion a=new Asignacion(4);
+        System.out.println(Arrays.toString(a.asignaTareas()));
     }
-
-    private int getMaximo(int[][] m, int indice, boolean estado) {
-        int maximo;
-        if(estado) {
-            maximo = m[indice][0];
-            for(int i = 0; i < m[0].length; i++)
-                maximo = Math.max(m[indice][i], maximo);
-        } else {
-            maximo = m[0][indice];
-            for(int i = 0; i < m.length; i++)
-                maximo = Math.max(m[i][indice], maximo);
-        }
-
-        return maximo;
-    }
-
-    private int getMinimo(int[][] m, int indice, boolean estado) {
-        int minimo;
-        if(estado) {
-            minimo = m[indice][0];
-            for(int i = 0; i < m[0].length; i++)
-                minimo = Math.min(m[indice][i], minimo);
-        } else {
-            minimo = m[0][indice];
-            for(int i = 0; i < m.length; i++)
-                minimo = Math.min(m[i][indice], minimo);
-        }
-        return minimo;
-    }
-
-    /***
-    **/
-
 
 }

@@ -8,6 +8,8 @@ import com.mysql.jdbc.PreparedStatement;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CompetEnlaceDao {
 
@@ -35,5 +37,32 @@ public class CompetEnlaceDao {
             ex.printStackTrace();
         }
         return res;
+    }
+
+    public static List<CompetEnlaceModel> getListEnlaceModelByIdGrafo(int pIdGrafo){
+        List<CompetEnlaceModel> lista = new ArrayList<CompetEnlaceModel>();
+        ResultSet resultado;
+        conexion=new ConexionCompet();
+        resultado=conexion.getQuery("SELECT * \n" +
+                "FROM enlace_compet a\n" +
+                "WHERE a.id_grafo ="+pIdGrafo);
+        try {
+            while(resultado.next()) {
+
+                int idEnlace = resultado.getInt("id_enlace");
+                int red = resultado.getInt("red");
+                int green = resultado.getInt("green");
+                int blue = resultado.getInt("blue");
+                int idNodo1 = resultado.getInt("id_nodo_1");
+                int idNodo2 = resultado.getInt("id_nodo_2");
+                int idGrafo = resultado.getInt("id_grafo");
+                CompetEnlaceModel enlaceModel = new CompetEnlaceModel(idEnlace,red,green,
+                        blue,idNodo1,idNodo2,idGrafo);
+                lista.add(enlaceModel);
+            }
+        }catch(SQLException ex) {
+            ex.printStackTrace();
+        }
+        return lista;
     }
 }
