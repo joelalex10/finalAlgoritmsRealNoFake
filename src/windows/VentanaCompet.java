@@ -6,9 +6,14 @@ import Database.Compet.Dao.CompetNodoDao;
 import Database.Compet.Model.CompetEnlaceModel;
 import Database.Compet.Model.CompetGrafoModel;
 import Database.Compet.Model.CompetNodoModel;
+import Database.EnlaceBDD;
+import Database.GrafoBDD;
+import Database.NodoBDD;
 import GrafoCompet.EnlaceCompet;
 import GrafoCompet.NodoCompet;
 import GrafoCompet.PosicionCompet;
+import grafos.Enlace;
+import grafos.Nodo;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -527,6 +532,51 @@ public class VentanaCompet extends JFrame {
         btnTable.setBackground(new Color(21, 88, 16));
         btnTable.setBounds(184, 52, 160, 30);
         panel_1.add(btnTable);
+
+        /*****
+        JButton btnRandomizar = new JButton("RANDOMIZAR");
+        btnRandomizar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                try{
+                    String strNumero = JOptionPane.showInputDialog("INGRESE EL NUMERO DE PUNTOS");
+
+
+                    JTextField tfLim1 = new JTextField();
+                    JTextField tfLim2 = new JTextField();
+
+                    Object[] fieldsOrigen ={
+                            new JLabel("Limite inferior"),
+                            tfLim1,
+                            new JLabel("Limite superior"),
+                            tfLim2
+                    };
+                    JOptionPane.showConfirmDialog(null,fieldsOrigen,
+                            "INGRESE LIMITES", JOptionPane.OK_CANCEL_OPTION);
+
+                    int size = Integer.parseInt(strNumero);
+                    int lim1 = Integer.parseInt(tfLim1.getText());
+                    int lim2 = Integer.parseInt(tfLim2.getText());
+                    System.out.println(size);
+                    System.out.println(lim1);
+                    System.out.println(lim2);
+
+                    for(int i=0;i<size;i++){
+
+                    }
+
+
+                }catch (NumberFormatException e){
+                    JOptionPane.showMessageDialog(null,"DEBE INGRESAR UN VALOR NUMERICO");
+                }
+
+
+            }
+        });
+        btnRandomizar.setForeground(Color.WHITE);
+        btnRandomizar.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 13));
+        btnRandomizar.setBackground(new Color(21, 88, 16));
+        btnRandomizar.setBounds(343, 52, 160, 30);
+        panel_1.add(btnRandomizar);**/
 
 
 

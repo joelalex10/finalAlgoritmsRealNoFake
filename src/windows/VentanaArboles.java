@@ -254,7 +254,6 @@ public class VentanaArboles extends JFrame {
     private void ejecutarMetodoCombo(int ob) {
         switch (ob){
             case 0:
-                String random = "";
                 String srtNumber = JOptionPane.showInputDialog("Ingrese la cantidad de numeros a randomizar");
 
                 JTextField tfLim1 = new JTextField();
