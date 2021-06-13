@@ -1,4 +1,5 @@
 package windows;
+import Algoritmos.HungarianC.HungarianAlgorithm;
 import Algoritmos.Kramer;
 import Database.Asignacion.AsignacionEnlaceDao;
 import Database.Asignacion.AsignacionGrafDao;
@@ -331,111 +332,81 @@ public class VentanaAsignacion {
 		}
 	}
 
+	private void ejecutarMaximo(double matDouble[][]){
+
+		System.out.println("");
+		for(int i=0;i<matDouble.length;i++){
+			for(int j=0;j<matDouble.length;j++){
+				System.out.print(matDouble[i][j]+"\t");
+			}
+			System.out.println("");
+		}
+
+		HungarianAlgorithm hungarianAlgorithm1 = new HungarianAlgorithm(matDouble);
+		System.out.println("EL MAXIMO ES: "+hungarianAlgorithm1.hgAlgorithm("max"));
+		int[][] MaxMatrixPositions1=hungarianAlgorithm1.hgAlgorithmAssignments("max");
+
+		hungarianAlgorithm1.restas("max");
+		VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen,
+				lienzoAsignacion.vectorNodosDestino, matDouble, hungarianAlgorithm1.restas("max"),hungarianAlgorithm1.matString("max"),hungarianAlgorithm1.hgAlgorithm("max"), lienzoAsignacion.vectorEnlace);
+		lienzoAsignacion.repaint();
+		window.setLocationRelativeTo(null);
+		window.setVisible(true);
+
+
+
+	}
+
+	private void ejecutarMinimo(double[][] matDouble) {
+		System.out.println("");
+		for(int i=0;i<matDouble.length;i++){
+			for(int j=0;j<matDouble.length;j++){
+				System.out.print(matDouble[i][j]+"\t");
+			}
+			System.out.println("");
+		}
+
+		HungarianAlgorithm hungarianAlgorithm1 = new HungarianAlgorithm(matDouble);
+		System.out.println("EL MINIMO ES: "+hungarianAlgorithm1.hgAlgorithm("min"));
+		int[][] MaxMatrixPositions1=hungarianAlgorithm1.hgAlgorithmAssignments("min");
+		hungarianAlgorithm1.restas("min");
+	}
 	private void ejecutarAsignacion() {
 		String []menu= {"Maximo","Minimo"};
-
-
-
-		String valor = (String)JOptionPane.showInputDialog(null, "seleccionar opcion", "opciones",JOptionPane.DEFAULT_OPTION, null, menu,menu[0]);
-		if (valor.equalsIgnoreCase ("Maximo")) {
-			if(lienzoAsignacion.vectorNodosDestino.size() !=lienzoAsignacion.vectorNodosOrigen.size()){
-				int max = lienzoAsignacion.vectorNodosDestino.size();
-				int matAux[][] = new int[max][max];
-				for(int i=0;i<max;i++){
-					for(int j=0;j<max;j++){
-						try{
-							matAux[i][j]=lienzoAsignacion.matrizCostos[i][j];
-						}catch (ArrayIndexOutOfBoundsException e){
-							matAux[i][j] = 0;
-						}
-
+		System.out.println("");
+		for(int i=0;i<lienzoAsignacion.vectorNodosOrigen.size();i++){
+			for(int j=0;j<lienzoAsignacion.vectorNodosDestino.size();j++){
+				System.out.print(lienzoAsignacion.matrizCostos[i][j]+"\t");
+			}
+			System.out.println("");
+		}
+		int sizeOrigen = lienzoAsignacion.vectorNodosOrigen.size();
+		int sizeDestino = lienzoAsignacion.vectorNodosDestino.size();
+		double matDouble[][] = new double[sizeDestino][sizeDestino];
+		if(sizeOrigen != sizeDestino){
+			for(int i=0;i<sizeDestino;i++){
+				for(int j=0;j<sizeDestino;j++){
+					try{
+						matDouble[i][j]=lienzoAsignacion.matrizCostos[i][j];
+					}catch (ArrayIndexOutOfBoundsException e){
+						matDouble[i][j] = 0;
 					}
 				}
-				AlgoritmoAsignacion cc = new AlgoritmoAsignacion (matAux, true);
-				cc.efectuarAlgoritmo();
-				optimo = cc.getMatrizOptimo();
-
-				int mat[][] = lienzoAsignacion.matrizCostos;
-				int matResta[][] = cc.resta1;
-				cc.letra(cc.matrizAdyacente,cc.cambiar(cc.matrizResultados));
-				String[][] matResultados = cc.orden(cc.matrizAdyacente,cc.cambiar(cc.matrizResultados));
-
-				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen,
-						lienzoAsignacion.vectorNodosDestino, mat, matResta,matResultados, cc.sumaTotal, lienzoAsignacion.vectorEnlace);
-				lienzoAsignacion.repaint();
-				window.setLocationRelativeTo(null);
-				window.setVisible(true);
-
-
-			}else{
-
-				System.out.println("MATRIZ");
-				for(int i=0;i< lienzoAsignacion.matrizCostos.length;i++){
-					for(int j=0;j< lienzoAsignacion.matrizCostos.length;j++){
-
-						System.out.println(lienzoAsignacion.matrizCostos[i][j]+"\t");
-					}
-					System.out.println("");
+			}
+		}else{
+			for(int i=0;i<sizeDestino;i++){
+				for(int j=0;j<sizeDestino;j++){
+					matDouble[i][j]=lienzoAsignacion.matrizCostos[i][j];
 				}
-
-				AlgoritmoAsignacion cc = new AlgoritmoAsignacion (lienzoAsignacion.matrizCostos, true);
-				cc.efectuarAlgoritmo();
-				optimo = cc.getMatrizOptimo();
-
-				int mat[][] = lienzoAsignacion.matrizCostos;
-				int matResta[][] = cc.resta1;
-
-				String[][] matResultados = cc.orden(cc.matrizAdyacente,cc.cambiar(cc.matrizResultados));
-				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen,
-						lienzoAsignacion.vectorNodosDestino, mat, matResta,matResultados,cc.sumaTotal, lienzoAsignacion.vectorEnlace);
-				lienzoAsignacion.repaint();
-				window.setLocationRelativeTo(null);
-				window.setVisible(true);
 			}
 		}
+		String valor = (String)JOptionPane.showInputDialog(null, "seleccionar opcion", "opciones",JOptionPane.DEFAULT_OPTION, null, menu,menu[0]);
+
+		if (valor.equalsIgnoreCase ("Maximo")) {
+			ejecutarMaximo(matDouble);
+		}
 		if (valor.equalsIgnoreCase ("Minimo")) {
-
-			if(lienzoAsignacion.vectorNodosOrigen.size() != lienzoAsignacion.vectorNodosDestino.size()){
-				int max = lienzoAsignacion.vectorNodosDestino.size();
-				int matAux[][] = new int[max][max];
-				for(int i=0;i<max;i++){
-					for(int j=0;j<max;j++){
-						try{
-							matAux[i][j]=lienzoAsignacion.matrizCostos[i][j];
-						}catch (ArrayIndexOutOfBoundsException e){
-							matAux[i][j] = 0;
-						}
-					}
-				}
-				AlgoritmoAsignacion cc = new AlgoritmoAsignacion (matAux, true);
-				cc.efectuarAlgoritmo();
-
-				int mat[][] = lienzoAsignacion.matrizCostos;
-				int matResta[][] = cc.resta1;
-
-				String[][] matResultados = cc.orden(cc.matrizAdyacente,cc.cambiar(cc.matrizResultados));
-				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen,
-						lienzoAsignacion.vectorNodosDestino, mat, matResta,matResultados,cc.sumaTotal, lienzoAsignacion.vectorEnlace);
-				lienzoAsignacion.repaint();
-				window.setLocationRelativeTo(null);
-				window.setVisible(true);
-
-				//optimo = cc.getMatrizOptimo();
-			}else{
-				AlgoritmoAsignacion cc = new AlgoritmoAsignacion (lienzoAsignacion.matrizCostos, false);
-				cc.efectuarAlgoritmo();
-
-				int mat[][] = lienzoAsignacion.matrizCostos;
-				int matResta[][] = cc.resta1;
-
-				String[][] matResultados = cc.orden(cc.matrizAdyacente,cc.cambiar(cc.matrizResultados));
-				VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen,
-						lienzoAsignacion.vectorNodosDestino, mat, matResta,matResultados,cc.sumaTotal, lienzoAsignacion.vectorEnlace);
-				lienzoAsignacion.repaint();
-				window.setLocationRelativeTo(null);
-				window.setVisible(true);
-				//optimo = cc.getMatrizOptimo();
-			}
+			ejecutarMinimo(matDouble);
 		}
 
 
@@ -458,6 +429,8 @@ public class VentanaAsignacion {
 		ventanaMatriz.setLocationRelativeTo(null);**/
 
 	}
+
+
 
 	public static void CostoTotal(int[][]matriz,int[][]matrizSolu){
 

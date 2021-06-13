@@ -4,19 +4,23 @@ import static java.lang.Math.*;
 import java.util.*;
 
 public class HungarianAlgorithm {
-
+	double[][] array;
+	public HungarianAlgorithm(double[][] array){
+		this.array = array;
+	}
 	//********************************//
 	//METHODS FOR CONSOLE INPUT-OUTPUT//
 	//********************************//
 
-	public static int readInput(String prompt)	//Reads input,returns double.
+
+	public int readInput(String prompt)	//Reads input,returns double.
 	{
 		Scanner in = new Scanner(System.in);
 		System.out.print(prompt);
 		int input = in.nextInt();
 		return input;
 	}
-	public static void printTime(double time)	//Formats time output.
+	public void printTime(double time)	//Formats time output.
 	{
 		String timeElapsed = "";
 		int days = (int)floor(time)/(24 * 3600);
@@ -39,8 +43,8 @@ public class HungarianAlgorithm {
 	//METHODS THAT PERFORM ARRAY-PROCESSING TASKS//
 	//*******************************************//
 
-	public static void generateRandomArray	//Generates random 2-D array.
-	(double[][] array, String randomMethod)	
+	public void generateRandomArray	//Generates random 2-D array.
+	(String randomMethod)
 	{
 		Random generator = new Random();
 		for (int i=0; i<array.length; i++)
@@ -59,8 +63,8 @@ public class HungarianAlgorithm {
 			}
 		}
 	}
-	public static double findLargest		//Finds the largest element in a 2D array.
-	(double[][] array)
+	public double findLargest		//Finds the largest element in a 2D array.
+	()
 	{
 		double largest = Double.NEGATIVE_INFINITY;
 		for (int i=0; i<array.length; i++)
@@ -76,8 +80,8 @@ public class HungarianAlgorithm {
 			
 		return largest;
 	}
-	public static double[][] transpose		//Transposes a double[][] array.
-	(double[][] array)	
+	public double[][] transpose		//Transposes a double[][] array.
+	()
 	{
 		double[][] transposedArray = new double[array[0].length][array.length];
 		for (int i=0; i<transposedArray.length; i++)
@@ -88,7 +92,7 @@ public class HungarianAlgorithm {
 		return transposedArray;
 	}
 	public static double[][] copyOf			//Copies all elements of an array to a new array.
-	(double[][] original)	
+	(double[][] original)
 	{
 		double[][] copy = new double[original.length][original[0].length];
 		for (int i=0; i<original.length; i++)
@@ -99,7 +103,7 @@ public class HungarianAlgorithm {
 
 		return copy;
 	}
-	public static double[][] copyToSquare	//Creates a copy of an array, made square by padding the right or bottom.
+	public double[][] copyToSquare	//Creates a copy of an array, made square by padding the right or bottom.
 	(double[][] original, double padValue)
 	{
 		int rows = original.length;
@@ -151,19 +155,20 @@ public class HungarianAlgorithm {
 	}
 
 	//**********************************//
-	//METHODS OF THE HUNGARIAN ALGORITHM//
+	//MÉTODOS DEL ALGORITMO HÚNGARO//
 	//**********************************//
 
-	//Core of the algorithm; takes required inputs and returns the assignments
-	public static int[][] hgAlgorithmAssignments(double[][] array, String sumType)
+	//Núcleo del algoritmo; toma las entradas requeridas y devuelve las asignaciones
+	public int[][] hgAlgorithmAssignments(String sumType)
 	{
-		//This variable is used to pad a rectangular array (so it will be picked all last [cost] or first [profit])
-		//and will not interfere with final assignments.  Also, it is used to flip the relationship between weights
-		//when "max" defines it as a profit matrix instead of a cost matrix.  Double.MAX_VALUE is not ideal, since arithmetic
-		//needs to be performed and overflow may occur.
-		double maxWeightPlusOne = findLargest(array) + 1;
+		// Esta variable se usa para rellenar una matriz rectangular (por lo que se seleccionará todo el último [costo] o el primero [beneficio])
+		// y no interferirá con las asignaciones finales. Además, se utiliza para invertir la relación entre pesos.
+		// cuando "max" lo define como una matriz de ganancias en lugar de una matriz de costos. Double.MAX_VALUE no es ideal, ya que la aritmética
+		// debe realizarse y puede producirse un desbordamiento.
+		double maxWeightPlusOne = findLargest() + 1;
 
 		double[][] cost = copyToSquare(array, maxWeightPlusOne);	//Create the cost matrix
+		System.out.println("");
 
 		if (sumType.equalsIgnoreCase("max"))	//Then array is a profit array.  Must flip the values because the algorithm finds lowest.
 		{
@@ -181,10 +186,11 @@ public class HungarianAlgorithm {
 		int[] colCover = new int[cost[0].length];				//The column covering vector.
 		int[] zero_RC = new int[2];								//Position of last zero from Step 4.
 		int[][] path = new int[cost.length * cost[0].length + 2][2];
-		int step = 1;											
+		int step = 1;
 		boolean done = false;
 		while (done == false)	//main execution loop
 		{
+			//System.out.println("EL VARIABLE STEP ES: "+step);
 			switch (step)
 			{
 				case 1:
@@ -200,7 +206,7 @@ public class HungarianAlgorithm {
 					step = hg_step4(step, cost, mask, rowCover, colCover, zero_RC);
 					break;
 				case 5:
-				step = hg_step5(step, mask, rowCover, colCover, zero_RC, path);
+					step = hg_step5(step, mask, rowCover, colCover, zero_RC, path);
 					break;
 				case 6:
 					step = hg_step6(step, cost, rowCover, colCover);
@@ -215,12 +221,18 @@ public class HungarianAlgorithm {
 		int assignmentCount = 0;	//In a input matrix taller than it is wide, the first
 									//assignments column will have to skip some numbers, so
 									//the index will not always match the first column ([0])
-		for (int i=0; i<mask.length; i++)
-		{
-			for (int j=0; j<mask[i].length; j++)
-			{
-				if (i < array.length && j < array[0].length && mask[i][j] == 1)
-				{
+		/***********
+		System.out.println("mask definitivos");
+		for (int i=0; i<mask.length; i++){
+			for (int j=0; j<mask[i].length; j++){
+				System.out.print(mask[i][j]+"\t");
+			}
+			System.out.println("");
+		}****/
+
+		for (int i=0; i<mask.length; i++){
+			for (int j=0; j<mask[i].length; j++){
+				if (i < array.length && j < array[0].length && mask[i][j] == 1){
 					assignments[assignmentCount][0] = i;
 					assignments[assignmentCount][1] = j;
 					assignmentCount++;
@@ -232,31 +244,37 @@ public class HungarianAlgorithm {
 	}
 	//Calls hgAlgorithmAssignments and getAssignmentSum to compute the
 	//minimum cost or maximum profit possible.
-	public static double hgAlgorithm(double[][] array, String sumType)
+	public double hgAlgorithm(String sumType)
 	{
-		return getAssignmentSum(array, hgAlgorithmAssignments(array, sumType));
+
+		return getAssignmentSum(hgAlgorithmAssignments(sumType));
+
+
 	}
-	public static double getAssignmentSum(double[][] array, int[][] assignments) {
+	public double getAssignmentSum(int[][] assignments) {
 		//Returns the min/max sum (cost/profit of the assignment) given the
 		//original input matrix and an assignment array (from hgAlgorithmAssignments)
 		double sum = 0; 
 		for (int i=0; i<assignments.length; i++)
 		{
+			System.out.println("pos["+assignments[i][0]+"]["+assignments[i][1]+"] = "+array[assignments[i][0]][assignments[i][1]]);
 			sum = sum + array[assignments[i][0]][assignments[i][1]];
+
 		}
 		return sum;
 	}
 	public static int hg_step1(int step, double[][] cost)
 	{
-		//What STEP 1 does:
-		//For each row of the cost matrix, find the smallest element
-		//and subtract it from from every other element in its row. 
+		//¿Qué hace el PASO 1?:
+		//Para cada fila de la matriz de costos, encuentre el elemento más pequeño
+		//y restarlo de todos los demás elementos de su fila.
 		
 		double minval;
 
 		for (int i=0; i<cost.length; i++)	
 		{									
 			minval=cost[i][0];
+
 			for (int j=0; j<cost[i].length; j++)	//1st inner loop finds min val in row.
 			{
 				if (minval>cost[i][j])
@@ -270,13 +288,16 @@ public class HungarianAlgorithm {
 			}
 		}
 
+
+
+
 		step=2;
 		return step;
 	}
 	public static int hg_step2(int step, double[][] cost, int[][] mask, int[] rowCover, int[] colCover)
 	{
-		//What STEP 2 does:
-		//Marks uncovered zeros as starred and covers their row and column.
+		//Qué hace el PASO 2:
+		//Marca los ceros descubiertos como estrellas y cubre su fila y columna.
 
 		for (int i=0; i<cost.length; i++)
 		{
@@ -290,6 +311,8 @@ public class HungarianAlgorithm {
 				}
 			}
 		}
+
+
 
 		clearCovers(rowCover, colCover);	//Reset cover vectors.
 
@@ -326,6 +349,15 @@ public class HungarianAlgorithm {
 		{
 			step=4;
 		}
+
+		/************System.out.println("mask 3");
+		for (int i=0; i<mask.length; i++){
+
+			for (int j=0; j<mask.length; j++){	//1st inner loop finds min val in row.
+				System.out.print(mask[i][j]+"\t");
+			}
+			System.out.println("");
+		}***/
 
 		return step;
 	}
@@ -374,6 +406,24 @@ public class HungarianAlgorithm {
 				}
 			}
 		}
+
+		/****************
+		System.out.println("datos 4");
+		for (int i=0; i<cost.length; i++){
+
+			for (int j=0; j<cost.length; j++){	//1st inner loop finds min val in row.
+				System.out.print(cost[i][j]+"\t");
+			}
+			System.out.println("");
+		}
+		System.out.println("mask 4");
+		for (int i=0; i<mask.length; i++){
+
+			for (int j=0; j<mask.length; j++){	//1st inner loop finds min val in row.
+				System.out.print(mask[i][j]+"\t");
+			}
+			System.out.println("");
+		}*********/
 
 		return step;
 	}
@@ -563,6 +613,85 @@ public class HungarianAlgorithm {
 		
 		return minval;
 	}
+	public String[][] matString(String sumType){
+		String[][] mat = new String[array.length][array.length];
+		int [][] arrPos = hgAlgorithmAssignments(sumType);
+		for(int i=0; i<array.length; i++) {
+			for(int j=0; j<array.length; j++){
+				mat[i][j] = String.valueOf(array[i][j]);
+			}
+		}
+
+		for (int i=0; i<arrPos.length; i++){
+			mat[arrPos[i][0]][arrPos[i][1]] = "("+mat[arrPos[i][0]][arrPos[i][1]]+")";
+		}
+		return mat;
+	}
+
+	public double[][]restas(String sumType){
+		double arrRestas[]= new double[array.length];
+		double matRestas[][] = new double[array.length][array.length];
+		switch (sumType){
+			case "max":
+				double valorMaxF=0;
+				for(int i=0; i<array.length; i++) {
+					valorMaxF = array[0][i];
+					for(int j=0; j<array.length; j++){
+						if(valorMaxF<array[j][i]) {
+							valorMaxF=array[j][i];
+						}
+					}
+					arrRestas[i]=valorMaxF;
+				}
+				for(int i=0;i<matRestas.length;i++){
+					for(int j=0;j<matRestas.length;j++){
+						matRestas[i][j] = arrRestas[j] - array[i][j];
+					}
+				}
+
+				System.out.println("");
+				for(int i=0;i<matRestas.length;i++){
+					for(int j=0;j<matRestas.length;j++){
+						System.out.print(matRestas[i][j]+"\t");
+					}
+
+					System.out.println("");
+				}
+				break;
+			case "min":
+				double arrRestas1[]= new double[array.length];
+				double matRestas1[][] = new double[array.length][array.length];
+				double valorMinF=0;
+				for(int i=0; i<array.length; i++) {
+					valorMinF = array[0][i];
+					for(int j=0; j<array.length; j++){
+						if(valorMinF>array[j][i]) {
+							valorMinF=array[j][i];
+						}
+					}
+					arrRestas1[i]=valorMinF;
+				}
+				for(int i=0;i<arrRestas1.length;i++){
+					for(int j=0;j<matRestas1.length;j++){
+						matRestas1[i][j] = array[i][j]- arrRestas1[j];
+					}
+				}
+
+				System.out.println("");
+				for(int i=0;i<matRestas1.length;i++){
+					for(int j=0;j<matRestas1.length;j++){
+						System.out.print(matRestas1[i][j]+"\t");
+					}
+
+					System.out.println("");
+				}
+				break;
+		}
+
+
+
+		return matRestas;
+	}
 
 	public static void set(double [][] arr, int i, int j, double v) {arr[i][j] = v;}
 
@@ -570,40 +699,6 @@ public class HungarianAlgorithm {
 	//MAIN METHOD//
 	//***********//
 
-	public static void main(String[] args) {
-		System.out.println("Running two tests on three arrays:\n");
 
-		// Square
-		double[][] test1 = {
-				//col0  col1  col2  col3
-				{6,  8,   7, 3},  //row0
-				{7,  7,   7, 4},  //row1
-				{8,  5,   7, 4},//row3
-				{5,  7,   7, 5}
-		};
-		// Tall
-		double[][] test2 = {
-				{5,  6,   8, 9},
-				{3,  4,   3, 5},
-				{2,  3,   1, 7},
-				{0,  0,   0, 0}
-
-
-		};
-		// Wide
-		double[][] test3 = {
-				{2,1,5},
-				{1,2,4},
-				{0,0,0}
-
-		};
-
-		System.out.println(hgAlgorithm(test1, "min"));
-		System.out.println(hgAlgorithm(test1, "max"));
-		System.out.println(hgAlgorithm(test2, "min"));
-		System.out.println(hgAlgorithm(test2, "max"));
-		System.out.println(hgAlgorithm(test3, "min"));
-		System.out.println(hgAlgorithm(test3, "max"));
-	}
 
 }

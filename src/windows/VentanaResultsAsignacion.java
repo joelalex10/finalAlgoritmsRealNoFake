@@ -15,12 +15,13 @@ public class VentanaResultsAsignacion extends JFrame {
     Vector<Nodo> vecNodo1;
     Vector<Nodo> vecNodo2;
     Vector<Enlace> vecEnlace;
-    int matrizCoeficientes[][];
-    int matrizRestas[][];
+    double matrizCoeficientes[][];
+    double matrizRestas[][];
     String matrizResultados[][];
-    int sumaTotal;
+    double sumaTotal;
 
-    public VentanaResultsAsignacion(int matrixRow, int matrixCol, Vector<Nodo> vecNodo1, Vector<Nodo> vecNodo2, int matrizCoeficientes[][],int  matrizRestas[][],String matrizResultados[][], int sumaTotal,
+
+    public VentanaResultsAsignacion(int matrixRow, int matrixCol, Vector<Nodo> vecNodo1, Vector<Nodo> vecNodo2, double matrizCoeficientes[][],double  matrizRestas[][],String matrizResultados[][], double sumaTotal,
                                     Vector<Enlace> vecEnlace) {
         this.matrixRow = matrixRow;
         this.matrixCol = matrixCol;
@@ -35,14 +36,15 @@ public class VentanaResultsAsignacion extends JFrame {
     }
 
     public void initialize(){
+
+
+
         setTitle("MATRIZ ASGINACION");
-        setBounds(100, 100, 590, 647);
+        setBounds(100, 100, 590, 690);
         getContentPane().setLayout(null);
 
-        /***JLabel jLabel = new JLabel();
-        jLabel.setText("MATRIZ ORIGINAL");
-        jLabel.setBounds(100,0,190,40);
-        add(jLabel);*/
+
+
         JTextField [][] matriz = new JTextField[matrixRow+1][matrixCol+1];
         int posh = 30;
         int posv = 60;
@@ -84,7 +86,7 @@ public class VentanaResultsAsignacion extends JFrame {
         }
 
         int posh1 = posh;
-        int posv1 = posv*matrizCoeficientes.length+20;
+        int posv1 = posv*matrizCoeficientes.length;
         JTextField [][] matriz1 = new JTextField[matrixRow+1][matrixCol+1];
         int fil1;
         int col1;
@@ -121,13 +123,12 @@ public class VentanaResultsAsignacion extends JFrame {
         for(int i=0;i<matrixRow;i++){
             for(int j=0;j<matrixCol;j++){
                 matriz1[i+1][j+1].setText(matrizRestas[i][j]+"");
-
                 cont++;
             }
         }
 
         int posh2 = posh;
-        int posv2 = posv*matrizCoeficientes.length*2+40;
+        int posv2 = posv*matrizCoeficientes.length*2;
         JTextField [][] matriz2 = new JTextField[matrixRow+1][matrixCol+1];
         int fil2;
         int col2;
@@ -161,7 +162,7 @@ public class VentanaResultsAsignacion extends JFrame {
         for(int i=0;i<matrixRow;i++){
             for(int j=0;j<matrixCol;j++){
 
-                if(matrizResultados[i][j].contains("(")){
+                if(!matrizResultados[i][j].contains("(")){
                     matriz2[i+1][j+1].setText(matrizResultados[i][j]+"");
                 }else{
                     matriz2[i+1][j+1].setText(matrizResultados[i][j]+"");
@@ -176,7 +177,7 @@ public class VentanaResultsAsignacion extends JFrame {
             for(int i=0;i<matrixRow;i++){
                 for(int j=0;j<matrixCol;j++){
 
-                    if(!matrizResultados[i][j].contains("(")){
+                    if(matrizResultados[i][j].contains("(")){
                         if(enlace.getNroActividadNodoInicio()==i && enlace.getNroActividadNodoFin()==j){
                             enlace.setTextcolor(Color.green);
                         }
@@ -188,8 +189,11 @@ public class VentanaResultsAsignacion extends JFrame {
 
         JLabel jLabel = new JLabel();
         jLabel.setText("Total: "+sumaTotal);
-        jLabel.setBounds(100,posv*3*matrizCoeficientes.length+20,190,40);
+        jLabel.setBounds(100,0,190,40);
+        //jLabel.setF();
         add(jLabel);
+
+
 
 
     }
