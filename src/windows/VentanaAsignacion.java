@@ -370,6 +370,13 @@ public class VentanaAsignacion {
 		System.out.println("EL MINIMO ES: "+hungarianAlgorithm1.hgAlgorithm("min"));
 		int[][] MaxMatrixPositions1=hungarianAlgorithm1.hgAlgorithmAssignments("min");
 		hungarianAlgorithm1.restas("min");
+
+		VentanaResultsAsignacion window=new VentanaResultsAsignacion(origen, destino, lienzoAsignacion.vectorNodosOrigen,
+				lienzoAsignacion.vectorNodosDestino, matDouble, hungarianAlgorithm1.restas("min"),hungarianAlgorithm1.matString("min"),hungarianAlgorithm1.hgAlgorithm("min"), lienzoAsignacion.vectorEnlace);
+		lienzoAsignacion.repaint();
+		window.setLocationRelativeTo(null);
+		window.setVisible(true);
+
 	}
 	private void ejecutarAsignacion() {
 		String []menu= {"Maximo","Minimo"};
@@ -403,9 +410,18 @@ public class VentanaAsignacion {
 		String valor = (String)JOptionPane.showInputDialog(null, "seleccionar opcion", "opciones",JOptionPane.DEFAULT_OPTION, null, menu,menu[0]);
 
 		if (valor.equalsIgnoreCase ("Maximo")) {
+
+			for(Enlace enlace: lienzoAsignacion.vectorEnlace){
+				enlace.setTextcolor(Color.white);
+
+			}
 			ejecutarMaximo(matDouble);
 		}
 		if (valor.equalsIgnoreCase ("Minimo")) {
+			for(Enlace enlace: lienzoAsignacion.vectorEnlace){
+				enlace.setTextcolor(Color.white);
+
+			}
 			ejecutarMinimo(matDouble);
 		}
 

@@ -645,11 +645,11 @@ public class HungarianAlgorithm {
 				}
 				for(int i=0;i<matRestas.length;i++){
 					for(int j=0;j<matRestas.length;j++){
-						matRestas[i][j] = arrRestas[j] - array[i][j];
+						matRestas[i][j] =  array[i][j] - arrRestas[j];
 					}
 				}
 
-				System.out.println("");
+				System.out.println("rest");
 				for(int i=0;i<matRestas.length;i++){
 					for(int j=0;j<matRestas.length;j++){
 						System.out.print(matRestas[i][j]+"\t");
@@ -659,8 +659,6 @@ public class HungarianAlgorithm {
 				}
 				break;
 			case "min":
-				double arrRestas1[]= new double[array.length];
-				double matRestas1[][] = new double[array.length][array.length];
 				double valorMinF=0;
 				for(int i=0; i<array.length; i++) {
 					valorMinF = array[0][i];
@@ -669,18 +667,18 @@ public class HungarianAlgorithm {
 							valorMinF=array[j][i];
 						}
 					}
-					arrRestas1[i]=valorMinF;
+					arrRestas[i]=valorMinF;
 				}
-				for(int i=0;i<arrRestas1.length;i++){
-					for(int j=0;j<matRestas1.length;j++){
-						matRestas1[i][j] = array[i][j]- arrRestas1[j];
+				for(int i=0;i<arrRestas.length;i++){
+					for(int j=0;j<matRestas.length;j++){
+						matRestas[i][j] = arrRestas[j]- array[i][j];
 					}
 				}
 
 				System.out.println("");
-				for(int i=0;i<matRestas1.length;i++){
-					for(int j=0;j<matRestas1.length;j++){
-						System.out.print(matRestas1[i][j]+"\t");
+				for(int i=0;i<matRestas.length;i++){
+					for(int j=0;j<matRestas.length;j++){
+						System.out.print(matRestas[i][j]+"\t");
 					}
 
 					System.out.println("");

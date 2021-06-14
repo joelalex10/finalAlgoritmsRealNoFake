@@ -40,7 +40,7 @@ public class VentanaResultsAsignacion extends JFrame {
 
 
         setTitle("MATRIZ ASGINACION");
-        setBounds(100, 100, 590, 690);
+        setBounds(100, 100, 590, 820);
         getContentPane().setLayout(null);
 
 
@@ -54,6 +54,7 @@ public class VentanaResultsAsignacion extends JFrame {
             for(fil=0;fil<(matrixCol+1);fil++){
                 matriz[col][fil]= new JTextField();
                 matriz[col][fil].setBounds(posv,posh,90,40);
+                matriz[col][fil].setEditable(false);
                 posv+=90;
                 add(matriz[col][fil]);
             }
@@ -82,6 +83,7 @@ public class VentanaResultsAsignacion extends JFrame {
         for(int i=0;i<matrixRow;i++){
             for(int j=0;j<matrixCol;j++){
                 matriz[i+1][j+1].setText(matrizCoeficientes[i][j]+"");
+
             }
         }
 
@@ -94,6 +96,7 @@ public class VentanaResultsAsignacion extends JFrame {
             for(fil1=0;fil1<(matrixCol+1);fil1++){
                 matriz1[col1][fil1]= new JTextField();
                 matriz1[col1][fil1].setBounds(posv,posh,90,40);
+                matriz1[col1][fil1].setEditable(false);
                 posv+=90;
                 add(matriz1[col1][fil1]);
             }
@@ -136,6 +139,7 @@ public class VentanaResultsAsignacion extends JFrame {
             for(fil2=0;fil2<(matrixCol+1);fil2++){
                 matriz2[col2][fil2]= new JTextField();
                 matriz2[col2][fil2].setBounds(posv,posh,90,40);
+                matriz2[col2][fil2].setEditable(false);
                 posv+=90;
                 add(matriz2[col2][fil2]);
             }
@@ -179,7 +183,7 @@ public class VentanaResultsAsignacion extends JFrame {
 
                     if(matrizResultados[i][j].contains("(")){
                         if(enlace.getNroActividadNodoInicio()==i && enlace.getNroActividadNodoFin()==j){
-                            enlace.setTextcolor(Color.green);
+                            enlace.setTextcolor(Color.GREEN);
                         }
                     }
 
@@ -189,9 +193,14 @@ public class VentanaResultsAsignacion extends JFrame {
 
         JLabel jLabel = new JLabel();
         jLabel.setText("Total: "+sumaTotal);
-        jLabel.setBounds(100,0,190,40);
-        //jLabel.setF();
+        System.out.println("size "+posh*matrizResultados.length);
+        jLabel.setBounds(posv*matrizResultados.length,posv*3*matrizCoeficientes.length,190,40);
+        jLabel.setFont(new Font("Tahoma", Font.PLAIN, 17));
+
+
+
         add(jLabel);
+
 
 
 

@@ -1,5 +1,6 @@
 package windows;
 
+import grafos.Enlace;
 import grafos.Nodo;
 
 import javax.swing.*;
@@ -40,7 +41,6 @@ public class VentanaResultsKramer extends JFrame {
     private void initialize() {
         setTitle("MATRIZ KRAMER");
         setBounds(100, 100, 890, 647);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
 
         JTextField [][] matriz = new JTextField[supplies+2][demands+2];
@@ -87,13 +87,10 @@ public class VentanaResultsKramer extends JFrame {
 
         for(int i=0;i<supplies;i++){
             for(int j=0;j<demands;j++){
-                matriz[i+1][j+1].setText(matirxCoast[i][j]+" -> "+results[i][j]);
+                matriz[i+1][j+1].setText(matirxCoast[i][j]+" => "+results[i][j]);
                 if(results[i][j]!=0){
                     matriz[i+1][j+1].setBackground(new Color(21, 88, 16));
                     matriz[i+1][j+1].setForeground(Color.white);
-
-
-
                 }
 
             }
