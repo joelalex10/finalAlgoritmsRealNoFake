@@ -1,5 +1,6 @@
 package windows;
 
+import Algoritmos.Johnson;
 import Database.EnlaceBDD;
 import Database.GrafoBDD;
 import Database.NodoBDD;
@@ -260,6 +261,21 @@ public class VentanaSorts extends JFrame {
         btnNewButton_1_1_1.setBackground(new Color(21, 88, 16));
         btnNewButton_1_1_1.setBounds(663, 11, 160, 30);
         panel_1.add(btnNewButton_1_1_1);
+
+        JButton btnLimpiar = new JButton("LIMPIAR");
+        btnLimpiar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+
+                jTextArea1.setText("");
+                jTextArea2.setText("");
+
+            }
+        });
+        btnLimpiar.setForeground(Color.WHITE);
+        btnLimpiar.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 13));
+        btnLimpiar.setBackground(new Color(21, 88, 16));
+        btnLimpiar.setBounds(663, 52, 160, 30);
+        panel_1.add(btnLimpiar);
 
         JButton btnNewButton_1_3 = new JButton("RANDOM");
         btnNewButton_1_3.addActionListener(new ActionListener() {

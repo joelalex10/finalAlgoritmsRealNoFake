@@ -39,11 +39,11 @@ public class MainHungarianAlgorithm {
         System.out.println("EL MINIMO ES: "+hungarianAlgorithm1.hgAlgorithm("min"));
         int[][] MinMatrixPositions1=hungarianAlgorithm1.hgAlgorithmAssignments("min");
         String[][] resultsPositions = hungarianAlgorithm1.matString("min");
-        hungarianAlgorithm1.restas("min");
+        hungarianAlgorithm1.restas("min",false);
 
         System.out.println("EL MAXIMO ES: "+hungarianAlgorithm1.hgAlgorithm("max"));
         int[][] MaxMatrixPositions1=hungarianAlgorithm1.hgAlgorithmAssignments("max");
-        hungarianAlgorithm1.restas("max");
+        hungarianAlgorithm1.restas("max",false);
         System.out.println("");
         String[][] resultsPositionsq = hungarianAlgorithm1.matString("max");
 

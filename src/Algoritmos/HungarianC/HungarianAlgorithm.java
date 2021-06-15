@@ -628,7 +628,7 @@ public class HungarianAlgorithm {
 		return mat;
 	}
 
-	public double[][]restas(String sumType){
+	public double[][]restas(String sumType, boolean isChange){
 		double arrRestas[]= new double[array.length];
 		double matRestas[][] = new double[array.length][array.length];
 		switch (sumType){
@@ -657,6 +657,41 @@ public class HungarianAlgorithm {
 
 					System.out.println("");
 				}
+
+				if(isChange){
+                    double arrRestas2[]= new double[array.length];
+                    double valorMax2=0;
+
+                    for(int i=0;i<matRestas.length;i++){
+                        valorMax2 = matRestas[i][0];
+                        for(int j=0;j<matRestas.length;j++){
+                            if(valorMax2<matRestas[i][j]) {
+                                valorMax2=matRestas[i][j];
+                            }
+                        }
+                        System.out.println("El valor max de la fila " + i + " es " + valorMax2);
+                        arrRestas2[i] = valorMax2;
+                    }
+                    for(int i=0;i<matRestas.length;i++){
+                        for(int j=0;j<matRestas.length;j++){
+                            matRestas[i][j] =  matRestas[i][j] - arrRestas2[i];
+                        }
+                    }
+
+                    System.out.println("rest2");
+                    for(int i=0;i<matRestas.length;i++){
+                        for(int j=0;j<matRestas.length;j++){
+                            System.out.print(matRestas[i][j]+"\t");
+                        }
+
+                        System.out.println("");
+                    }
+
+
+				    System.out.println("SE HARA MAXIMO DE FILAS");
+                }
+
+
 				break;
 			case "min":
 				double valorMinF=0;
@@ -683,7 +718,41 @@ public class HungarianAlgorithm {
 
 					System.out.println("");
 				}
-				break;
+
+                if(isChange){
+                    double arrRestas2[]= new double[array.length];
+                    double valorMin2=0;
+
+                    for(int i=0;i<matRestas.length;i++){
+                        valorMin2 = matRestas[i][0];
+                        for(int j=0;j<matRestas.length;j++){
+                            if(valorMin2<matRestas[i][j]) {
+                                valorMin2=matRestas[i][j];
+                            }
+                        }
+                        System.out.println("El valor min de la fila " + i + " es " + valorMin2);
+                        arrRestas2[i] = valorMin2;
+                    }
+                    for(int i=0;i<matRestas.length;i++){
+                        for(int j=0;j<matRestas.length;j++){
+                            matRestas[i][j] =   arrRestas2[i] - matRestas[i][j];
+                        }
+                    }
+
+                    System.out.println("rest2");
+                    for(int i=0;i<matRestas.length;i++){
+                        for(int j=0;j<matRestas.length;j++){
+                            System.out.print(matRestas[i][j]+"\t");
+                        }
+
+                        System.out.println("");
+                    }
+
+
+                    System.out.println("SE HARA MINIMO DE FILAS");
+                }
+
+                break;
 		}
 
 

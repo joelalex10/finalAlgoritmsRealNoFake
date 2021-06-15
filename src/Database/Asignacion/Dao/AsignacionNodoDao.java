@@ -1,4 +1,4 @@
-package Database.Asignacion;
+package Database.Asignacion.Dao;
 
 import Database.Asignacion.ConexionAsignacion;
 import Database.Conexion;

@@ -1,4 +1,4 @@
-package Database.Asignacion;
+package Database.Asignacion.Dao;
 
 import Database.Asignacion.ConexionAsignacion;
 import com.mysql.jdbc.Connection;

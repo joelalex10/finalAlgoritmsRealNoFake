@@ -1,5 +1,6 @@
-package Database.Asignacion;
+package Database.Asignacion.Dao;
 
+import Database.Asignacion.ConexionAsignacion;
 import Database.Conexion;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;

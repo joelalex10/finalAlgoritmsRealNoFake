@@ -40,8 +40,8 @@ public class Nodo {
 		g.setColor(Color.white);
 		g.drawString(this.nombre, this.x+45, this.y);
 
-		//g.setColor(Color.white);
-		//g.drawString(this.rec1 + "|"+this.rec2, this.x+90, this.y);
+		g.setColor(Color.white);
+		g.drawString(this.rec1 + "|"+this.rec2, this.x+90, this.y);
 	}
 
 	public int getX() {
