@@ -136,7 +136,7 @@ public class VentanaAsignacion {
 						saveGrafo();
 						break;
 					case 2:
-						if(ofertas.length == 0 && demandas.length==0){
+						if(ofertas == null && demandas==null){
 							JOptionPane.showMessageDialog(null,"NO TIENE REGISTRADAS DISPONIBILIDADES Y DEMANDAS");
 						}else{
 							saveGrafo();
@@ -220,19 +220,10 @@ public class VentanaAsignacion {
 				for(int i=0;i<listaofertas.size();i++){
 					ofertas[i]=listaofertas.get(i).getDato();
 				}
-
 				for(int i=0;i<listaDemandas.size();i++){
 					demandas[i]=listaDemandas.get(i).getDato();
 				}
-
-
-
-
 				lienzoAsignacion.repaint();
-
-
-
-
 			}
 		});
 		btnNewButton_1_3_2.setForeground(Color.WHITE);
@@ -290,6 +281,7 @@ public class VentanaAsignacion {
 		panel_1.add(btnAsignacion);
 
 
+		/****
 		JButton btnCargarGrafo = new JButton("REASIGNAR VALORES");
 
 
@@ -321,7 +313,7 @@ public class VentanaAsignacion {
 		btnCargarGrafo.setFont(new Font("Nirmala UI Semilight", Font.BOLD, 13));
 		btnCargarGrafo.setBackground(new Color(21, 88, 16));
 		btnCargarGrafo.setBounds(502, 52, 160, 30);
-		panel_1.add(btnCargarGrafo);
+		panel_1.add(btnCargarGrafo);***/
 
 
 
@@ -329,38 +321,36 @@ public class VentanaAsignacion {
 
 	private void agregarOfertaDemanda() {
 
-		JButton btnNewButton_1_3_1 = new JButton("OFERTA/DEMANDA");
+		JButton btnNewButton_1_3_1 = new JButton("VER DATOS");
 		btnNewButton_1_3_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-
-
-				if(ofertas==null){
-					ofertas= new int[lienzoAsignacion.vectorNodosOrigen.size()];
-				}
-
-
-				if(demandas==null){
-					demandas = new int[lienzoAsignacion.vectorNodosDestino.size()];
-				}
-				System.out.println("MATRICES");
-				System.out.println(ofertas.length);
-				System.out.println(demandas.length);
-
-				generarArreglo(lienzoAsignacion.vectorNodosOrigen, "ENTER SUPPLIES",ofertas,listaofertas.size());
-				generarArreglo(lienzoAsignacion.vectorNodosDestino, "ENTER DEMANDS",demandas,listaDemandas.size());
-
+				String []menu= {"Ofertas","Demandas"};
+				int optimo[][] = null;
 				matrizCostosKramer= lienzoAsignacion.matrizCostos;
+				String valor = (String)JOptionPane.showInputDialog(null, "seleccionar opcion", "opciones",JOptionPane.DEFAULT_OPTION, null, menu,menu[0]);
 
+				if (valor.equalsIgnoreCase ("Ofertas")) {
 
-				for(int i=0;i<ofertas.length;i++){
-					System.out.print(ofertas[i]+"\t");
+					if(ofertas==null){
+						ofertas= new int[lienzoAsignacion.vectorNodosOrigen.size()];
+					}
+					generarArreglo(lienzoAsignacion.vectorNodosOrigen, "OFERTAS",ofertas,listaofertas.size());
+					for(int i=0;i<ofertas.length;i++){
+						System.out.print(ofertas[i]+"\t");
+					}
+
 				}
+				if (valor.equalsIgnoreCase ("Demandas")) {
 
-				for(int i=0;i<demandas.length;i++){
-					System.out.print(demandas[i]+"\t");
+					if(demandas==null){
+						demandas = new int[lienzoAsignacion.vectorNodosDestino.size()];
+					}
+					generarArreglo(lienzoAsignacion.vectorNodosDestino, "DEMANDAS",demandas,listaDemandas.size());
+					for(int i=0;i<demandas.length;i++){
+						System.out.print(demandas[i]+"\t");
+					}
 				}
-
 			}
 		});
 		btnNewButton_1_3_1.setForeground(Color.WHITE);
@@ -445,15 +435,26 @@ public class VentanaAsignacion {
 	private void ejecutarKramer() {
 		String []menu= {"Maximo","Minimo"};
 		int optimo[][] = null;
+		matrizCostosKramer= lienzoAsignacion.matrizCostos;
 		String valor = (String)JOptionPane.showInputDialog(null, "seleccionar opcion", "opciones",JOptionPane.DEFAULT_OPTION, null, menu,menu[0]);
 
 		if (valor.equalsIgnoreCase ("Minimo")) {
+
+			System.out.println("EJECUTANDO METODO");
+
+			System.out.println("EL TAMANIO DE ARR OFERTAS ES: "+ofertas.length);
+			System.out.println("EL TAMANIO DE ARR DEMANDAS ES: "+demandas.length);
+			System.out.println("EL TAMANIO DE ARR MATRIZ COSTOS KRAMER ES: "+matrizCostosKramer.length);
+
 
 			Kramer kramer = new Kramer(demandas,ofertas,matrizCostosKramer);
 			kramer.init();
 			kramer.northWestCornerRule();
 			kramer.minimizar();
 			int [][] matrix = kramer.printResult();
+
+
+
 			for(int i=0;i<ofertas.length;i++){
 				for(int j=0;j<demandas.length;j++){
 					System.out.print(matrix[i][j]+"\t");
@@ -461,6 +462,11 @@ public class VentanaAsignacion {
 				System.out.println("");
 			}
 			System.out.println("EL TOTAL DE COSTOS ES: "+kramer.getTotalCosts());
+			System.out.println("EL TAMANIO ES: "+ofertas.length);
+			System.out.println("EL TAMANIO ES: "+demandas.length);
+
+			System.out.println("EL TAMANIO ES: "+lienzoAsignacion.vectorNodosOrigen.size());
+			System.out.println("EL TAMANIO ES: "+lienzoAsignacion.vectorNodosDestino.size());
 			VentanaResultsKramer window=new VentanaResultsKramer(origen, destino, lienzoAsignacion.vectorNodosOrigen, lienzoAsignacion.vectorNodosDestino, ofertas, demandas, matrizCostosKramer,matrix, kramer.getTotalCosts());
 			window.setLocationRelativeTo(null);
 			window.setVisible(true);
